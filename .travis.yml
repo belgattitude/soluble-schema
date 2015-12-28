@@ -14,7 +14,6 @@ matrix:
 env:
     global:
         - SEND_COVERAGE=false
-        - DB=mysql
 
 before_script:
   - mkdir -p tests/tmp/cache 
@@ -22,8 +21,8 @@ before_script:
   - mkdir -p test/logs
   - mysql -e "DROP DATABASE IF EXISTS phpunit_soluble_test_db;" -uroot
   - mysql -e "create database phpunit_soluble_test_db;" -uroot
-  - zcat tests/data/mysql/schema.sql.gz | mysql -uroot phpunit_soluble_test_db
-  - zcat tests/data/mysql/data.sql.gz | mysql -uroot phpunit_soluble_test_db
+  - zcat test/data/mysql/schema.sql.gz | mysql -uroot phpunit_soluble_test_db
+  - zcat test/data/mysql/data.sql.gz | mysql -uroot phpunit_soluble_test_db
   - mysql -e "show databases;" -uroot
   - mysql -e "connect phpunit_soluble_test_db; show tables;" -uroot  
   - travis_retry composer self-update
