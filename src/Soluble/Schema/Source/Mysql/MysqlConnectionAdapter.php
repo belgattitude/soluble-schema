@@ -132,11 +132,16 @@ class MysqlConnectionAdapter
             $r = $this->mysqli->query($query);
             if (!$r) {
                 throw new Exception\InvalidArgumentException("Query cannot be executed [$query].");
+            } elseif (!$r instanceof \mysqli_result) {
+                throw new Exception\InvalidArgumentException("Query didn't return any result [$query].");
             }
+            
             $results = new ArrayObject();
+            
             while ($row = $r->fetch_assoc()) {
                 $results->append($row);
             }
+            
         } catch (\Exception $e) {
             $msg = "Query error: {$e->getMessage}";
             throw new Exception\InvalidArgumentException($msg);
