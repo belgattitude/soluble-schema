@@ -17,10 +17,10 @@ env:
         - DB=mysql
 
 before_script:
-  - if [[ "$DB" == "mysql" ]]; then mysql -e "DROP DATABASE IF EXISTS phpunit_soluble_test_db;" -uroot; fi
-  - if [[ "$DB" == "mysql" ]]; then mysql -e "create database phpunit_soluble_test_db;" -uroot; fi
-  - if [[ "$DB" == "mysql" ]]; then zcat tests/data/mysql/schema.sql.gz | mysql -uroot phpunit_soluble_test_db; fi
-  - if [[ "$DB" == "mysql" ]]; then zcat tests/data/mysql/data.sql.gz | mysql -uroot phpunit_soluble_test_db; fi
+  - mysql -e "DROP DATABASE IF EXISTS phpunit_soluble_test_db;" -uroot
+  - mysql -e "create database phpunit_soluble_test_db;" -uroot
+  - zcat tests/data/mysql/schema.sql.gz | mysql -uroot phpunit_soluble_test_db
+  - zcat tests/data/mysql/data.sql.gz | mysql -uroot phpunit_soluble_test_db
   - travis_retry composer self-update
   - travis_retry composer --prefer-source --dev install
   - mkdir build
