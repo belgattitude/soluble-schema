@@ -3,8 +3,11 @@ filter:
     excluded_paths: [test/*, vendor/*, bin/*, doc/*]
 before_commands:
     - "composer update --prefer-source"
+    - "composer require zendframework/zendframework"
     
 tools:
+    external_code_coverage: 
+        timeout: 600
     php_cpd:
         excluded_dirs: ["vendor", "test", "bin", "doc"]    
     php_pdepend:
