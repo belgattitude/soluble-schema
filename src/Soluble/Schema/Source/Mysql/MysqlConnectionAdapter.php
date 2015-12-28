@@ -74,7 +74,7 @@ class MysqlConnectionAdapter
     public function quoteValue($value)
     {
         if ($this->type == self::DRIVER_TYPE_MYSQLI) {
-            $quoted = $this->mysqli->real_escape_string($value);
+            $quoted = "'" . $this->mysqli->real_escape_string($value) . "'";
         } else {
             $quoted = $this->pdo->quote($value);
         }
