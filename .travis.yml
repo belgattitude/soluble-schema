@@ -16,9 +16,9 @@ env:
         - SEND_COVERAGE=false
 
 before_script:
+  - mkdir -p test/logs
   - mkdir -p tests/tmp/cache 
   - mkdir -p build/logs
-  - mkdir -p test/logs
   - mysql -e "DROP DATABASE IF EXISTS phpunit_soluble_schema_db;" -u root
   - mysql -e "CREATE DATABASE phpunit_soluble_schema_db;" -u root
   - zcat test/data/mysql/schema.sql.gz | mysql -u root phpunit_soluble_schema_db

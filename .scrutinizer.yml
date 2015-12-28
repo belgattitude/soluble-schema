@@ -3,6 +3,10 @@ imports:
 filter:
     paths: [src/*]
     excluded_paths: [test/*, vendor/*, bin/*, doc/*]
+before_commands:
+    - 'composer install --dev --prefer-source' 
+    - 'composer require zendframework/service-manager'
+    
 tools:
     external_code_coverage: 
         timeout: 400

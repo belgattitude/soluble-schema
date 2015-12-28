@@ -23,17 +23,23 @@ Database information schema parser
 
 ### Installation in your PHP project
 
-`Soluble\Db\Info` works best via [composer](http://getcomposer.org/).
+`Soluble\Schema` works best via [composer](http://getcomposer.org/).
 
 ```sh
 php composer require soluble/schema:0.*
 ```
+Most modern frameworks will include Composer out of the box, but ensure the following file is included:
+
+```php
+<?php
+// include the Composer autoloader
+require 'vendor/autoload.php';
+```
+
 
 ## Examples
 
 ### Read MySql MariaDb information schema
-
-
 
 
 
