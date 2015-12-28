@@ -2,9 +2,9 @@
 namespace Soluble\Schema\Source\Mysql;
 
 use Soluble\Schema\Exception;
-use Zend\Config\Config;
 use Soluble\Schema\Source;
 use Soluble\Schema\Source\Mysql\MysqlConnectionWrapper;
+use Zend\Config\Config;
 
 class MysqlInformationSchema extends Source\AbstractSource
 {
@@ -391,9 +391,7 @@ class MysqlInformationSchema extends Source\AbstractSource
             //@codeCoverageIgnoreEnd
         }
         $this->restoreInnoDbStats();
-
-
-
+        
         $references = array();
         $config = new Config(array('tables' => array()), true);
         $tables = $config->offsetGet('tables');
@@ -538,6 +536,7 @@ class MysqlInformationSchema extends Source\AbstractSource
         $array = $config->toArray();
         unset($config);
         return $array;
+
     }
 
     /**
