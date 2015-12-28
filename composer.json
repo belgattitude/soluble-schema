@@ -24,7 +24,8 @@
     },
     "require": {
         "php": ">=5.4.4",
-        "zendframework/zend-config": "2.5.*"
+        "soluble/datatype": "0.9.*",
+        "zendframework/zend-config": ">=2.1.0,<3.0.0"
     },
     "archive": {
         "exclude": ["test", "doc", ".travis.yml", ".codeclimate.yml", ".coveralls.yml", ".scrutinizer.yml", ".php_cs", ".gitignore"]

@@ -10,8 +10,13 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Metadata
      */
-    protected $metadata;
+    protected $mysqli_meta;
 
+    /**
+     * @var Metadata
+     */    
+    protected $pdo_meta;
+    
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -19,9 +24,8 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
 
-        $adapter = \SolubleTestFactories::getDbConnection();
-
-        $this->metadata = new Metadata($adapter);
+        $this->mysqli_meta = new Metadata(\SolubleTestFactories::getDbConnection('mysqli'));
+        $this->pdo_meta = new Metadata(\SolubleTestFactories::getDbConnection('pdo:mysql'));
     }
 
     /**
@@ -34,14 +38,22 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSource()
     {
-        $source = $this->metadata->getSource();
+        $source = $this->mysqli_meta->getSource();
         $this->assertInstanceOf('Soluble\Schema\Source\AbstractSource', $source);
+        
+        $source = $this->pdo_meta->getSource();
+        $this->assertInstanceOf('Soluble\Schema\Source\AbstractSource', $source);
+        
     }
 
-    public function testGetDbAdapter()
+    public function testGetConnection()
     {
-        $adapter = $this->metadata->getDbAdapter();
-        $this->assertInstanceOf('Zend\Db\Adapter\Adapter', $adapter);
+        $connection = $this->mysqli_meta->getConnection();
+        $this->assertInstanceOf('mysqli', $connection);
+        
+        $connection = $this->pdo_meta->getConnection();
+        $this->assertInstanceOf('PDO', $connection);
+        
     }
 
 
@@ -49,13 +61,8 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Soluble\Schema\Exception\UnsupportedDriverException');
 
-        $config = array(
-            'driver' => 'Pdo_Sqlite',
-            'database' => 'sqlite::memory:'
-        );
+        $connection = new \PDO('sqlite::memory:');
 
-        $adapter = new Adapter($config);
-
-        $metadata = new Metadata($adapter);
+        $metadata = new Metadata($connection);
     }
 }

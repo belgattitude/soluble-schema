@@ -2,37 +2,37 @@
 
 namespace Soluble\Schema;
 
-use Zend\Db\Adapter\Adapter;
+use Soluble\Schema\Source;
 
 class Metadata
 {
     /**
-     * Adapter
+     * Internal database connection
      *
-     * @var Adapter
+     * @var mixed
      */
-    protected $adapter = null;
+    protected $connection = null;
 
     /**
-     * @var \Soluble\Schema\Source\AbstractSource
+     * @var Source\AbstractSource
      */
     protected $source = null;
 
     /**
      * Constructor
      * @throws Exception\UnsupportedDriverException
-     * @param Adapter $adapter
+     * @param pdo|mysqli|resource $connection
      */
-    public function __construct(Adapter $adapter)
+    public function __construct($connection)
     {
-        $this->adapter = $adapter;
-        $this->source = $this->createSourceFromAdapter($adapter);
+        $this->connection = $connection;
+        $this->source = $this->createSourceFromConnection($connection);
     }
 
 
     /**
      *
-     * @return \Soluble\Schema\Source\AbstractSource
+     * @return Source\AbstractSource
      */
     public function getSource()
     {
@@ -44,30 +44,37 @@ class Metadata
      * Automatically create source from adapter
      *
      * @throws Exception\UnsupportedDriverException
-     * @param \Zend\Db\Adapter\Adapter $adapter
+     * @param pdo|mysqli|resource $connection
      * @param string $schema database schema to use or null to current schema defined by the adapter
-     * @return \Soluble\Schema\Source\AbstractSource
+     * @return Source\AbstractSource
      */
-    protected function createSourceFromAdapter(Adapter $adapter, $schema = null)
+    protected function createSourceFromConnection($connection, $schema = null)
     {
-        $adapter_name = strtolower($adapter->getPlatform()->getName());
-        switch ($adapter_name) {
+        $driver_name = null;
+        if ($connection instanceof \PDO) {
+            $driver_name = 'pdo_' . strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
+        } elseif ($connection instanceof \mysqli) {
+            $driver_name = 'mysql';
+        } 
+        
+        switch ($driver_name) {
+            case 'pdo_mysql':
             case 'mysql':
-                $source =  new Source\Mysql\InformationSchema($adapter, $schema);
+                $source =  new Source\Mysql\MysqlInformationSchema($connection, $schema);
                 break;
             default:
-                throw new Exception\UnsupportedDriverException("Currently only MySQL is supported, driver set '$adapter_name'");
+                throw new Exception\UnsupportedDriverException("Currently only MySQL is supported '$driver_name'");
         }
 
         return $source;
     }
 
     /**
-     * Return underlying database adapter
-     * @return Adapter
+     * Return underlying database connection
+     * @return mixed
      */
-    public function getDbAdapter()
+    public function getConnection()
     {
-        return $this->adapter;
+        return $this->connection;
     }
 }
