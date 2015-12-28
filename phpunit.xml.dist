@@ -17,7 +17,7 @@
         <server name="MYSQL_HOSTNAME" value="127.0.0.1" />
         <server name="MYSQL_USERNAME" value="root" />
         <server name="MYSQL_PASSWORD" value="" />
-        <server name="MYSQL_DATABASE" value="phpunit_soluble_test_db" />
+        <server name="MYSQL_DATABASE" value="phpunit_soluble_schema_db" />
         <server name="PHPUNIT_CACHE_DIR" value="./test/tmp/cache" />		          
         <ini name="date.timezone" value="Europe/Brussels"/>
     </php>

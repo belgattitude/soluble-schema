@@ -30,6 +30,7 @@ class SolubleTestFactories {
                     PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES $charset",
                 );                 
                 $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password, $options);
+                
                 break;
             case 'mysqli' :
                 $conn = new \mysqli($hostname,$username,$password,$database);

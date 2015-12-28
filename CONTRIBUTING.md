@@ -53,7 +53,16 @@ To run tests:
   $ composer install
   ```
 
-- Prepary the phpunit.xml configuration and run the tests
+- Install MySQL test database
+
+  ```console
+  $ mysql -e "DROP DATABASE IF EXISTS phpunit_soluble_schema_db;" -u root
+  $ mysql -e "CREATE DATABASE phpunit_soluble_schema_db;" -u root -p
+  $ zcat test/data/mysql/schema.sql.gz | mysql -u root -p phpunit_soluble_schema_db
+  $ zcat test/data/mysql/data.sql.gz | mysql -u root -p phpunit_soluble_schema_db
+  ```
+
+- Prepare the phpunit.xml configuration and run the tests
 
   ```console
   $ cp phpunit.xml.dist phpunit.xml

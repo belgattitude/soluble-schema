@@ -57,6 +57,7 @@ class MysqlConnectionAdapter
         $query = 'SELECT DATABASE() as current_schema';
         $results = $this->query($query);
         if (count($results) == 0) {
+
             return false;
         }
         return $results[0]['current_schema'];
@@ -126,14 +127,14 @@ class MysqlConnectionAdapter
     {
 
         try {
-            $stmt = $this->mysqli->query($query);
-            if (!$stmt) {
+            $r = $this->mysqli->query($query);
+            if (!$r) {
                 throw new Exception\InvalidArgumentException("Query cannot be executed [$query].");
             }
             $results = new ArrayObject();
-            foreach ($stmt as $row) {
+            while($row = $r->fetch_assoc()){
                 $results->append($row);
-            }
+            }            
         } catch (\Exception $e) {
             $msg = "Query error: {$e->getMessage}";
             throw new Exception\InvalidArgumentException($msg);
