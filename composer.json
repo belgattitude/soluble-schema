@@ -1,0 +1,34 @@
+{
+    "name": "soluble/schema",
+    "description": "Database information schema",
+    "license": "MIT",
+    "keywords": [
+        "database",
+        "mysql",
+        "information schema",
+        "schema"
+    ],
+    "homepage": "https://github.com/belgattitude/soluble-schema",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Sébastien Vanvelthem",
+            "homepage": "http://www.nuvolia.com/",
+            "role": "Lead developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Soluble\\Schema\\": "src/Soluble/Schema"
+        }
+    },
+    "require": {
+        "php": ">=5.4.4",
+        "zendframework/zend-config": "@stable",
+        "zendframework/zend-db": "@stable",
+        "zendframework/zend-cache": "@stable"
+    },
+    "archive": {
+        "exclude": ["test", "doc", ".travis.yml", ".codeclimate.yml", ".coveralls.yml", ".scrutinizer.yml", ".php_cs", ".gitignore"]
+    }
+}
