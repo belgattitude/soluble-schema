@@ -2,8 +2,7 @@ filter:
     paths: [src/*]
     excluded_paths: [test/*, vendor/*, bin/*, doc/*]
 before_commands:
-    - "composer update --prefer-source"
-    - "composer require zendframework/zendframework"
+    - "composer update --no-dev --prefer-source"
     
 tools:
     external_code_coverage: 
