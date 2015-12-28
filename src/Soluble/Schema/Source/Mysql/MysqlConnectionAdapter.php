@@ -5,6 +5,10 @@ namespace Soluble\Schema\Source\Mysql;
 use Soluble\Schema\Exception;
 use ArrayObject;
 
+/**
+ * Wrapper for basic mysqli/pdo usage
+ */
+
 class MysqlConnectionAdapter
 {
 
@@ -32,7 +36,7 @@ class MysqlConnectionAdapter
     /**
      *
      * @throws Exception\InvalidArgumentException
-     * @param mysqli|PDO $conn
+     * @param \mysqli|\PDO $conn
      */
     public function __construct($conn)
     {
@@ -125,7 +129,6 @@ class MysqlConnectionAdapter
      */
     protected function executeMysqli($query)
     {
-
         try {
             $r = $this->mysqli->query($query);
             if (!$r) {
@@ -140,7 +143,5 @@ class MysqlConnectionAdapter
             throw new Exception\InvalidArgumentException($msg);
         }
         return $results;
-
-
     }
 }
