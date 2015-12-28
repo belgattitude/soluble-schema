@@ -2,12 +2,12 @@
 
 namespace Soluble\Schema\Source\Mysql;
 
-use Soluble\Schema\Exception;
-use ArrayObject;
-
 /**
  * Wrapper for basic mysqli/pdo usage
  */
+
+use Soluble\Schema\Exception;
+use ArrayObject;
 
 class MysqlConnectionAdapter
 {
@@ -43,7 +43,7 @@ class MysqlConnectionAdapter
         if ($conn instanceof \mysqli) {
             $this->mysqli = $conn;
             $this->type = self::DRIVER_TYPE_MYSQLI;
-        } elseif ($conn instanceof \PDO) {
+        } elseif ($conn instanceof \PDO && $conn->getAttribute(\PDO::ATTR_DRIVER_NAME) == 'mysql') {
             $this->pdo = $conn;
             $this->type = self::DRIVER_TYPE_PDO;
         } else {
