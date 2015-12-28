@@ -5,14 +5,15 @@ namespace Soluble\Schema\Source\Mysql;
 use Soluble\Schema\Exception;
 use ArrayObject;
 
-class MysqlConnectionAdapter {
+class MysqlConnectionAdapter
+{
 
     const DRIVER_TYPE_PDO = 'pdo';
     const DRIVER_TYPE_MYSQLI = 'mysqli';
 
     /**
      *
-     * @var string 
+     * @var string
      */
     protected $driver;
 
@@ -29,11 +30,12 @@ class MysqlConnectionAdapter {
     protected $pdo;
 
     /**
-     * 
+     *
      * @throws Exception\InvalidArgumentException
      * @param mysqli|PDO $conn
      */
-    public function __construct($conn) {
+    public function __construct($conn)
+    {
         if ($conn instanceof \mysqli) {
             $this->mysqli = $conn;
             $this->type = self::DRIVER_TYPE_MYSQLI;
@@ -50,7 +52,8 @@ class MysqlConnectionAdapter {
      * Return current schema name
      * @return string|false
      */
-    public function getCurrentSchema() {
+    public function getCurrentSchema()
+    {
         $query = 'SELECT DATABASE() as current_schema';
         $results = $this->query($query);
         if (count($results) == 0) {
@@ -60,11 +63,12 @@ class MysqlConnectionAdapter {
     }
 
     /**
-     * 
+     *
      * @param string $value
      * @return string
      */
-    public function quoteValue($value) {
+    public function quoteValue($value)
+    {
         if ($this->type == self::DRIVER_TYPE_MYSQLI) {
             $quoted = $this->mysqli->real_escape_string($value);
         } else {
@@ -75,11 +79,12 @@ class MysqlConnectionAdapter {
 
     /**
      * Execute query and return query as an ArrayObject
-     * 
+     *
      * @param string $query
      * @return ArrayObject
      */
-    public function query($query) {
+    public function query($query)
+    {
         if ($this->type == self::DRIVER_TYPE_MYSQLI) {
             $results = $this->executeMysqli($query);
         } else {
@@ -89,11 +94,12 @@ class MysqlConnectionAdapter {
     }
 
     /**
-     * 
+     *
      * @param string $query
      * @return ArrayObject
      */
-    protected function executePDO($query) {
+    protected function executePDO($query)
+    {
 
         try {
             $stmt = $this->pdo->query($query, \PDO::FETCH_ASSOC);
@@ -112,11 +118,12 @@ class MysqlConnectionAdapter {
     }
 
     /**
-     * 
+     *
      * @param string $query
      * @return ArrayObject
      */
-    protected function executeMysqli($query) {
+    protected function executeMysqli($query)
+    {
 
         try {
             $stmt = $this->mysqli->query($query);
@@ -133,7 +140,6 @@ class MysqlConnectionAdapter {
         }
         return $results;
 
-        
-    }
 
+    }
 }

@@ -14,13 +14,13 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
      * @var \PDO|\mysqli
      */
     protected $conn;
-    
+
     /**
      *
      * @var MysqlConnectionAdapter
      */
     protected $adapter;
-    
+
     /**
      * @var MysqlInformationSchema
      */
@@ -43,7 +43,7 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Soluble\Schema\Exception\SchemaNotFoundException');
         $metadata = new MysqlInformationSchema($this->conn, $schema = "fdgdfgdfgppooaze");
         $metadata->getSchemaConfig();
-        
+
         /*
         try {
          $metadata->getSchemaConfig();
@@ -55,12 +55,12 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
             die('cool');
         }*/
     }
-    
-    
+
+
     public function testConstructThrowsInvalidArgumentException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
-        
+
         $metadata = new MysqlInformationSchema($this->conn, array('schema_not_valid'));
     }
 
@@ -69,9 +69,9 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
         $metadata = new MysqlInformationSchema($this->conn, $schema = "   ");
     }
-    
-    
-    
+
+
+
 
     public function testGetSchemaConfig()
     {
@@ -80,29 +80,29 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $schema['tables']);
         $this->assertTrue(array_key_exists('product', $schema['tables']));
     }
-    
+
     public function testGetTableConfigThrowsTableNotFoundException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\TableNotFoundException');
         $config = $this->metadata->getTableConfig('table_unexistent_999');
     }
-    
+
     public function testGetTableConfig()
     {
         $table = "product_brand";
-        
+
         $config = $this->metadata->getTableConfig($table);
         //$writer = new \Zend\Config\Writer\PhpArray();
         //$string = $writer->toString($config);
         $this->assertInternalType('array', $config);
         $this->assertEquals('product_brand', $config['name']);
-       
+
         $this->assertEquals('reference', $config['unique_keys']['unique_reference_idx'][0]);
         $this->assertEquals('brand_id', $config['primary_keys'][0]);
         $this->assertEquals(false, $config['columns']['created_by']['primary']);
         $this->assertEquals(true, $config['columns']['brand_id']['primary']);
     }
-    
+
     public function testGetRelations()
     {
         $relations = $this->metadata->getRelations('product');
@@ -113,11 +113,11 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('constraint_name', $relations['unit_id']);
     }
 
-    
-    
-    
 
-    
+
+
+
+
     public function testGetTablesInformation()
     {
         $ti = $this->metadata->getTablesInformation();
@@ -129,19 +129,19 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('primary_keys', $ti[$table]);
         $this->assertArrayHasKey('unique_keys', $ti[$table]);
     }
-    
+
     public function testGetUniqueKeys()
     {
         $unique = $this->metadata->getUniqueKeys('test_table_with_unique_key');
-        
+
         $this->assertInternalType('array', $unique);
         $this->assertEquals(1, count($unique));
         $this->assertArrayHasKey('unique_id_1', $unique);
         $this->assertInternalType('array', $unique['unique_id_1']);
         $this->assertEquals(2, count($unique['unique_id_1']));
         $this->assertEquals(array('unique_id_1', 'unique_id_2'), $unique['unique_id_1']);
-        
-        
+
+
         $unique = $this->metadata->getUniqueKeys('product');
         $this->assertInternalType('array', $unique);
         $this->assertEquals(3, count($unique));
@@ -149,54 +149,54 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('unique_reference_idx', $unique);
         $this->assertArrayHasKey('unique_slug_idx', $unique);
 
-        
-        $unique = $this->metadata->getUniqueKeys('product', $include_pk=true);
+
+        $unique = $this->metadata->getUniqueKeys('product', $include_pk = true);
         $this->assertInternalType('array', $unique);
         $this->assertEquals(4, count($unique));
         $this->assertArrayHasKey('PRIMARY', $unique);
         $this->assertArrayHasKey('unique_legacy_mapping_idx', $unique);
         $this->assertArrayHasKey('unique_reference_idx', $unique);
         $this->assertArrayHasKey('unique_slug_idx', $unique);
-        
+
         $unique = $this->metadata->getUniqueKeys('test_table_without_pk');
         $this->assertInternalType('array', $unique);
         $this->assertEquals(0, count($unique));
-        
+
         // No unqiue contraints, no primary key
-        $unique = $this->metadata->getUniqueKeys('test_table_without_pk', $include_pk=true);
+        $unique = $this->metadata->getUniqueKeys('test_table_without_pk', $include_pk = true);
         $this->assertInternalType('array', $unique);
         $this->assertEquals(0, count($unique));
     }
-    
-    
+
+
     public function testGetPrimaryKey()
     {
         $primary = $this->metadata->getPrimaryKey('user');
         $this->assertInternalType('string', $primary);
         $this->assertEquals('user_id', $primary);
     }
-    
-          
-    
+
+
+
     public function testGetPrimaryKeyThrowsTableNotFoundException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\TableNotFoundException');
         $primary = $this->metadata->getPrimaryKey('table_not_found_899');
     }
-      
+
     public function testGetPrimaryKeyThrowsMultiplePrimaryKeyException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\MultiplePrimaryKeyException');
         $primary = $this->metadata->getPrimaryKey('test_table_with_multipk');
     }
-    
+
     public function testGetColumns()
     {
         $columns = $this->metadata->getColumns('user');
         $this->assertEquals('user_id', $columns[0]);
         $this->assertEquals('password', $columns[4]);
     }
-    
+
     public function testGetTableInformation()
     {
         $info = $this->metadata->getTableInformation('user');
@@ -209,15 +209,15 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->metadata->hasTable('user'));
         $this->assertFalse($this->metadata->hasTable('user_not_exists_888'));
     }
-    
-    
+
+
     public function testInnoDbStat()
     {
         $adapter = $this->adapter;
         $this->metadata->clearCacheInformation();
         $sql = "show global variables like 'innodb_stats_on_metadata'";
         $results = $adapter->query($sql);
-        $row = $results->offsetGet(0);        
+        $row = $results->offsetGet(0);
         $status = strtoupper($row['Value']);
         if ($status == 'OFF') {
             // Let's make it ON
@@ -225,34 +225,34 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
             $results = $adapter->query($sql);
             //$row = $results->current();
             //var_dump($row);
-            
-            
+
+
             $this->metadata->getPrimaryKey('user');
             $adapter->query("set global innodb_stats_on_metadata='OFF'");
         }
     }
-     
+
 
     public function testGetPrimaryKeyThrowsInvalidArgumentException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
         $primary = $this->metadata->getPrimaryKey(array('cool'));
     }
-    
+
 
     public function testGetPrimaryKeysThrowsInvalidArgumentException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
         $primary = $this->metadata->getPrimaryKeys(array('cool'));
     }
-    
-    
+
+
     public function testGetPrimaryKeyThrowsNoPrimaryKeyException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\NoPrimaryKeyException');
         $primary = $this->metadata->getPrimaryKey('test_table_without_pk');
     }
-    
+
     public function testGetPrimaryKeys()
     {
         $keys = $this->metadata->getPrimaryKeys('user');
@@ -260,7 +260,7 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('user_id', $keys[0]);
     }
 
-    
+
     public function testGetPrimaryKeysThrowsNoPrimaryKeyException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\NoPrimaryKeyException');

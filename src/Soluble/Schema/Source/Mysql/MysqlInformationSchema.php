@@ -10,7 +10,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 {
     /**
      * Schema name
-     * 
+     *
      * @var string
      */
     protected $schema;
@@ -63,7 +63,7 @@ class MysqlInformationSchema extends Source\AbstractSource
             $msg = "MysqlInformationSchema requires a valid 'mysqli' or 'pdo:mysql' connection object ({$e->getMessage()}).";
             throw new Exception\InvalidArgumentException($msg);
         }
-        
+
         if ($schema === null) {
             $schema = $this->adapter->getCurrentSchema();
             if (!$schema) {
@@ -71,7 +71,7 @@ class MysqlInformationSchema extends Source\AbstractSource
                 throw new Exception\InvalidUsageException($msg);
             }
         }
-        
+
         $this->setDefaultSchema($schema);
     }
 
@@ -391,7 +391,7 @@ class MysqlInformationSchema extends Source\AbstractSource
             //@codeCoverageIgnoreEnd
         }
         $this->restoreInnoDbStats();
-        
+
         $references = array();
         $config = new Config(array('tables' => array()), true);
         $tables = $config->offsetGet('tables');

@@ -55,7 +55,7 @@ class Type
 
         return new $class($name, $tableName, $schemaName);
     }
-    
+
     /**
      * Return all supported types
      *

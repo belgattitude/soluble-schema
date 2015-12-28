@@ -413,7 +413,7 @@ abstract class AbstractColumnDefinition
     {
         return ($this instanceof DatetimeColumnInterface);
     }
-    
+
     /**
      * Return an array version of the column definition
      * @return array
