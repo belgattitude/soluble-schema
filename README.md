@@ -14,10 +14,15 @@ Database information schema parser
 
 ## Features
 
+- Read database information schema
+- Support tables, index, relations, unique keys...
+- Get specific table information 
 
 ## Requirements
 
-- PHP engine 5.4+, 7.0 or HHVM >= 3.2.
+- PHP engine 5.4+, 7.0+ or HHVM >= 3.2.
+- See supported platforms (Mysql, MariaDb)
+
 
 ## Installation
 
@@ -36,11 +41,89 @@ Most modern frameworks will include Composer out of the box, but ensure the foll
 require 'vendor/autoload.php';
 ```
 
+## Supported platforms
+
+Currently only MySQL and MariaDB are supported. 
+
+| Database     | Driver             | Source class                             |
+|-----------------------------------|------------------------------------------|
+| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
+| Mariadb 5.1+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
+
+To implement new sources for information schema (oracle, postgres...), just extends the `Soluble\Schema\Source\AbstractSource` class and send a pull request.
 
 ## Examples
 
-### Read MySql MariaDb information schema
+### Read MySQL information schema
 
+```php
+<?php
+
+use Soluble\Schema;
+use PDO;
+
+$pdo = new PDO("mysql:host=$hostname", $username, $password, [
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+]);
+
+$schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
+
+// All schema configuration
+$config = $schema->getSchemaConfig();
+var_dump($config);
+
+// Test if table exists in schema
+if ($schema->hasTable($table)) {
+    //...
+}
+
+```
+
+### Read table specific information
+
+```php
+<?php
+
+use Soluble\Schema;
+use mysqli;
+
+$mysqli = new mysqli($hostname,$username,$password,$database);
+$mysqli->set_charset($charset);
+
+$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
+
+// Get table columns
+$columns = $schema->getColumns($columns);
+
+// Get primary key
+try {
+    $pk = $schema->getPrimaryKey($table);
+} catch (Schema\Exception\MultiplePrimaryKeyException $e) {
+    //...
+} catch (Schema\Exception\NoPrimaryKeyException $e) {
+    //...
+}
+
+// Get multiple primary keys
+try {
+    $pks = $schema->getPrimaryKeys($table);
+} catch (Schema\Exception\MultiplePrimaryKeyException $e) {
+    //...
+} catch (Schema\Exception\NoPrimaryKeyException $e) {
+    // ...
+}
+
+// Get unique keys
+$uniques = $schema->getUniqueKeys($table);
+
+
+// Get table foreign keys and relations
+$relations = $schema->getRelations($table);
+
+// Full table information
+$info = $schema->getTableInformation($table);
+
+```
 
 
 ## Coding standards

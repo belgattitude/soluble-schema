@@ -41,7 +41,7 @@ class SolubleTestFactories {
                 break;
             case 'mysqli' :
                 $conn = new \mysqli($hostname,$username,$password,$database);
-                 $conn->set_charset($charset);
+                $conn->set_charset($charset);
                 break;
             default:
                 throw new \Exception(__METHOD__ . " Unsupported driver type ($type)");
