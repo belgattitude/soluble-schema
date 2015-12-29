@@ -27,15 +27,15 @@ class MysqlConnectionAdapterPDOTest extends \PHPUnit_Framework_TestCase
     {
         $current = $this->adapter->getCurrentSchema();
         $this->assertEquals(\SolubleTestFactories::getDatabaseName('pdo:mysql'), $current);
-        
+
         $config = \SolubleTestFactories::getDbConfiguration('pdo:mysql');
         unset($config['database']);
-        
+
         $adapter = new MysqlConnectionAdapter(\SolubleTestFactories::getDbConnection('pdo:mysql', $config));
         $current = $adapter->getCurrentSchema();
-        
+
         $this->assertFalse($current);
-        
+
     }
     public function testExecute()
     {

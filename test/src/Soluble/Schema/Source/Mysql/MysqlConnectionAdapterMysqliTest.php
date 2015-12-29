@@ -27,18 +27,18 @@ class MysqlConnectionAdapterMysqliTest extends \PHPUnit_Framework_TestCase
     {
         $current = $this->adapter->getCurrentSchema();
         $this->assertEquals(\SolubleTestFactories::getDatabaseName('mysqli'), $current);
-        
+
         $config = \SolubleTestFactories::getDbConfiguration('mysqli');
         unset($config['database']);
-        
+
         $adapter = new MysqlConnectionAdapter(\SolubleTestFactories::getDbConnection('mysqli', $config));
         $current = $adapter->getCurrentSchema();
-        
+
         $this->assertFalse($current);
     }
-    
-    
-    
+
+
+
     public function testConstructorThrowsException()
     {
         $this->setExpectedException('\Soluble\Schema\Exception\InvalidArgumentException');
