@@ -44,16 +44,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $metadata = new MysqlInformationSchema($this->conn, $schema = "fdgdfgdfgppooaze");
         $metadata->getSchemaConfig();
 
-        /*
-        try {
-         $metadata->getSchemaConfig();
-        } catch(\Exception $e) {
-            echo "\n";
-            echo $e->getTraceAsString();
-            echo $e->getMessage();
-            echo "\n";
-            die('cool');
-        }*/
     }
 
 
@@ -225,7 +215,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
             $results = $adapter->query($sql);
             //$row = $results->current();
             //var_dump($row);
-
 
             $this->metadata->getPrimaryKey('user');
             $adapter->execute("set global innodb_stats_on_metadata='OFF'");

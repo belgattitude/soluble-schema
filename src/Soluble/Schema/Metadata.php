@@ -21,7 +21,7 @@ class Metadata
     /**
      * Constructor
      * @throws Exception\UnsupportedDriverException
-     * @param pdo|mysqli|resource $connection
+     * @param \PDO|\mysqli|mixed $connection
      */
     public function __construct($connection)
     {
@@ -44,7 +44,7 @@ class Metadata
      * Automatically create source from adapter
      *
      * @throws Exception\UnsupportedDriverException
-     * @param pdo|mysqli|resource $connection
+     * @param \PDO|\mysqli|mixed $connection
      * @param string $schema database schema to use or null to current schema defined by the adapter
      * @return Source\AbstractSource
      */
@@ -55,8 +55,8 @@ class Metadata
             $driver_name = 'pdo_' . strtolower($connection->getAttribute(\PDO::ATTR_DRIVER_NAME));
         } elseif ($connection instanceof \mysqli) {
             $driver_name = 'mysql';
-        } 
-        
+        }
+
         switch ($driver_name) {
             case 'pdo_mysql':
             case 'mysql':
@@ -71,7 +71,7 @@ class Metadata
 
     /**
      * Return underlying database connection
-     * @return mixed
+     * @return mixed|\PDO|\mysqli
      */
     public function getConnection()
     {

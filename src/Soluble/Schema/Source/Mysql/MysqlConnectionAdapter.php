@@ -38,7 +38,7 @@ class MysqlConnectionAdapter
      * @var string
      */
     protected $type;
-    
+
     /**
      *
      * @throws Exception\InvalidArgumentException
@@ -66,7 +66,7 @@ class MysqlConnectionAdapter
     {
         $query = 'SELECT DATABASE() as current_schema';
         $results = $this->query($query);
-        if (count($results) == 0) {
+        if (count($results) == 0 || $results[0]['current_schema'] === null) {
             return false;
         }
         return $results[0]['current_schema'];
@@ -102,7 +102,7 @@ class MysqlConnectionAdapter
         }
         return $results;
     }
-    
+
     /**
      * Execute special sql like set names...
      * @param string $query
@@ -111,7 +111,7 @@ class MysqlConnectionAdapter
     public function execute($query)
     {
         if ($this->type == self::DRIVER_TYPE_MYSQLI) {
-            $this->queryMysqli($query, false);
+            $this->queryMysqli($query);
         } else {
             $this->executePDO($query);
         }
@@ -125,14 +125,19 @@ class MysqlConnectionAdapter
     protected function executePDO($query)
     {
         try {
-            $this->pdo->exec($query);
+            $ret = $this->pdo->exec($query);
+            if ($ret === false) {
+                throw new Exception\InvalidArgumentException("Cannot execute [$query].");
+            }
+        } catch (Exception\InvalidArgumentException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $msg = "PDOException : {$e->getMessage()} [$query]";
             throw new Exception\InvalidArgumentException($msg);
         }
     }
-    
-    
+
+
     /**
      *
      * @param string $query
@@ -142,7 +147,7 @@ class MysqlConnectionAdapter
     {
         try {
             $stmt = $this->pdo->query($query, \PDO::FETCH_ASSOC);
-            if (!$stmt) {
+            if ($stmt === false) {
                 throw new Exception\InvalidArgumentException("Query cannot be executed [$query].");
             }
             $results = new ArrayObject();
@@ -161,26 +166,25 @@ class MysqlConnectionAdapter
     /**
      *
      * @param string $query
-     * @param boolean $throw_exception_if_empty if empty result (like set command...)
      * @return ArrayObject
      */
-    protected function queryMysqli($query, $throw_exception_if_empty=true)
+    protected function queryMysqli($query)
     {
         try {
             $r = $this->mysqli->query($query);
-            
+
             $results = new ArrayObject();
-            
-            if (!$r) {
+
+            if ($r === false) {
                 throw new Exception\InvalidArgumentException("Query cannot be executed [$query].");
-            } elseif ($throw_exception_if_empty && !$r instanceof \mysqli_result) {
+            } elseif ($r !== true && !$r instanceof \mysqli_result) {
                 throw new Exception\InvalidArgumentException("Query didn't return any result [$query].");
-            } elseif($r instanceof \mysqli_result)  {
+            } elseif ($r instanceof \mysqli_result) {
                 while ($row = $r->fetch_assoc()) {
                     $results->append($row);
                 }
             }
-            
+
         } catch (Exception\InvalidArgumentException $e) {
             throw $e;
         } catch (\Exception $e) {

@@ -50,7 +50,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
     /**
      *
-     * @param \PDO|\mysqli|resource $connection
+     * @param \PDO|\mysqli $connection
      * @param string $schema default schema, taken from adapter if not given
      * @throws Exception\InvalidArgumentException for invalid connection
      * @throws Exception\InvalidUsageException thrown if no schema can be found.

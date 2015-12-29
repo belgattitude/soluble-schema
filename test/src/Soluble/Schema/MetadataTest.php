@@ -14,9 +14,9 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @var Metadata
-     */    
+     */
     protected $pdo_meta;
-    
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -40,20 +40,20 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     {
         $source = $this->mysqli_meta->getSource();
         $this->assertInstanceOf('Soluble\Schema\Source\AbstractSource', $source);
-        
+
         $source = $this->pdo_meta->getSource();
         $this->assertInstanceOf('Soluble\Schema\Source\AbstractSource', $source);
-        
+
     }
 
     public function testGetConnection()
     {
         $connection = $this->mysqli_meta->getConnection();
         $this->assertInstanceOf('mysqli', $connection);
-        
+
         $connection = $this->pdo_meta->getConnection();
         $this->assertInstanceOf('PDO', $connection);
-        
+
     }
 
 
