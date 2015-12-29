@@ -114,8 +114,10 @@ class MysqlConnectionAdapter
             foreach ($stmt as $row) {
                 $results->append($row);
             }
+        } catch (Exception\InvalidArgumentException $e) {
+            throw $e;
         } catch (\Exception $e) {
-            $msg = "Query error: {$e->getMessage}";
+            $msg = "PDOException : {$e->getMessage()} [$query]";
             throw new Exception\InvalidArgumentException($msg);
         }
         return $results;
@@ -142,8 +144,10 @@ class MysqlConnectionAdapter
                 $results->append($row);
             }
             
+        } catch (Exception\InvalidArgumentException $e) {
+            throw $e;
         } catch (\Exception $e) {
-            $msg = "Query error: {$e->getMessage}";
+            $msg = "MysqliException: {$e->getMessage()} [$query]";
             throw new Exception\InvalidArgumentException($msg);
         }
         return $results;
