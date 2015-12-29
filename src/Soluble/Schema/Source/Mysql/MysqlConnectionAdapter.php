@@ -110,7 +110,6 @@ class MysqlConnectionAdapter
      */
     protected function executePDO($query)
     {
-
         try {
             $stmt = $this->pdo->query($query, \PDO::FETCH_ASSOC);
             if (!$stmt) {
@@ -132,22 +131,25 @@ class MysqlConnectionAdapter
     /**
      *
      * @param string $query
+     * @param boolean $throw_exception_if_empty if empty result (like set command...)
      * @return ArrayObject
      */
-    protected function executeMysqli($query)
+    protected function executeMysqli($query, $throw_exception_if_empty=false)
     {
         try {
             $r = $this->mysqli->query($query);
             if (!$r) {
                 throw new Exception\InvalidArgumentException("Query cannot be executed [$query].");
-            } elseif (!$r instanceof \mysqli_result) {
+            } elseif (!$r instanceof \mysqli_result && $throw_exception_if_empty) {
                 throw new Exception\InvalidArgumentException("Query didn't return any result [$query].");
             }
             
             $results = new ArrayObject();
             
-            while ($row = $r->fetch_assoc()) {
-                $results->append($row);
+            if ($r instanceof \mysqli_result) {
+                while ($row = $r->fetch_assoc()) {
+                    $results->append($row);
+                }
             }
             
         } catch (Exception\InvalidArgumentException $e) {
