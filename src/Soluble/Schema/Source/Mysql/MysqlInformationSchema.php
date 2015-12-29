@@ -66,7 +66,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
         if ($schema === null) {
             $schema = $this->adapter->getCurrentSchema();
-            if (!$schema) {
+            if ($schema === false || $schema == '') {
                 $msg = "Database name (schema) parameter missing and no default schema set on connection";
                 throw new Exception\InvalidUsageException($msg);
             }
