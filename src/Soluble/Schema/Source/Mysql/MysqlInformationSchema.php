@@ -16,7 +16,7 @@ class MysqlInformationSchema extends Source\AbstractSource
     protected $schema;
 
     /**
-     * @var MysqlConnectionWrapper
+     * @var MysqlConnectionAdapter
      */
     protected $adapter;
 
