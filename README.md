@@ -45,8 +45,8 @@ require 'vendor/autoload.php';
 
 Currently only MySQL and MariaDB are supported. 
 
-| Database     | Driver             | Source class                             |
-|-----------------------------------|------------------------------------------|
+| Database     | Driver             | Source class                                         |
+|--------------|--------------------|------------------------------------------------------|
 | MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
 | Mariadb 5.1+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
 
