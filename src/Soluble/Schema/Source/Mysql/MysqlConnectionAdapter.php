@@ -35,6 +35,12 @@ class MysqlConnectionAdapter
 
     /**
      *
+     * @var string
+     */
+    protected $type;
+    
+    /**
+     *
      * @throws Exception\InvalidArgumentException
      * @param \mysqli|\PDO $conn
      */
