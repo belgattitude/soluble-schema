@@ -221,14 +221,14 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $status = strtoupper($row['Value']);
         if ($status == 'OFF') {
             // Let's make it ON
-            $adapter->query("set global innodb_stats_on_metadata='ON'");
+            $adapter->execute("set global innodb_stats_on_metadata='ON'");
             $results = $adapter->query($sql);
             //$row = $results->current();
             //var_dump($row);
 
 
             $this->metadata->getPrimaryKey('user');
-            $adapter->query("set global innodb_stats_on_metadata='OFF'");
+            $adapter->execute("set global innodb_stats_on_metadata='OFF'");
         }
     }
 

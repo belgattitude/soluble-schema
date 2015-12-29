@@ -557,7 +557,7 @@ class MysqlInformationSchema extends Source\AbstractSource
                 if ($value != 'OFF') {
                     $this->mysql_innodbstats_value = $value;
                     // disabling innodb_stats
-                    $this->adapter->query("set global innodb_stats_on_metadata='OFF'");
+                    $this->adapter->execute("set global innodb_stats_on_metadata='OFF'");
                 }
             }
         } catch (\Exception $e) {
@@ -575,7 +575,7 @@ class MysqlInformationSchema extends Source\AbstractSource
         $value = $this->mysql_innodbstats_value;
         if ($value !== null) {
             // restoring old variable
-            $this->adapter->query("set global innodb_stats_on_metadata='$value'");
+            $this->adapter->execute("set global innodb_stats_on_metadata='$value'");
         }
     }
 

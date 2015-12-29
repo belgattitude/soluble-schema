@@ -96,19 +96,49 @@ class MysqlConnectionAdapter
     public function query($query)
     {
         if ($this->type == self::DRIVER_TYPE_MYSQLI) {
-            $results = $this->executeMysqli($query);
+            $results = $this->queryMysqli($query);
         } else {
-            $results = $this->executePDO($query);
+            $results = $this->queryPDO($query);
         }
         return $results;
+    }
+    
+    /**
+     * Execute special sql like set names...
+     * @param string $query
+     * @return void
+     */
+    public function execute($query)
+    {
+        if ($this->type == self::DRIVER_TYPE_MYSQLI) {
+            $this->queryMysqli($query, false);
+        } else {
+            $this->executePDO($query);
+        }
     }
 
     /**
      *
      * @param string $query
-     * @return ArrayObject
+     * @return void
      */
     protected function executePDO($query)
+    {
+        try {
+            $this->pdo->exec($query);
+        } catch (\Exception $e) {
+            $msg = "PDOException : {$e->getMessage()} [$query]";
+            throw new Exception\InvalidArgumentException($msg);
+        }
+    }
+    
+    
+    /**
+     *
+     * @param string $query
+     * @return ArrayObject
+     */
+    protected function queryPDO($query)
     {
         try {
             $stmt = $this->pdo->query($query, \PDO::FETCH_ASSOC);
@@ -134,19 +164,18 @@ class MysqlConnectionAdapter
      * @param boolean $throw_exception_if_empty if empty result (like set command...)
      * @return ArrayObject
      */
-    protected function executeMysqli($query, $throw_exception_if_empty=false)
+    protected function queryMysqli($query, $throw_exception_if_empty=true)
     {
         try {
             $r = $this->mysqli->query($query);
-            if (!$r) {
-                throw new Exception\InvalidArgumentException("Query cannot be executed [$query].");
-            } elseif (!$r instanceof \mysqli_result && $throw_exception_if_empty) {
-                throw new Exception\InvalidArgumentException("Query didn't return any result [$query].");
-            }
             
             $results = new ArrayObject();
             
-            if ($r instanceof \mysqli_result) {
+            if (!$r) {
+                throw new Exception\InvalidArgumentException("Query cannot be executed [$query].");
+            } elseif ($throw_exception_if_empty && !$r instanceof \mysqli_result) {
+                throw new Exception\InvalidArgumentException("Query didn't return any result [$query].");
+            } elseif($r instanceof \mysqli_result)  {
                 while ($row = $r->fetch_assoc()) {
                     $results->append($row);
                 }
