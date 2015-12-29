@@ -6,6 +6,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/badges/coverage.png?s=aaa552f6313a3a50145f0e87b252c84677c22aa9)](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/badges/quality-score.png?s=6f3ab91f916bf642f248e82c29857f94cb50bb33)](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/)
 [![Latest Stable Version](https://poser.pugx.org/soluble/schema/v/stable.svg)](https://packagist.org/packages/soluble/schema)
+[![Total Downloads](https://poser.pugx.org/soluble/schema/downloads.png)](https://packagist.org/packages/soluble/schema)
 [![License](https://poser.pugx.org/soluble/schema/license.png)](https://packagist.org/packages/soluble/schema)
 
 ## Introduction
@@ -125,6 +126,11 @@ $info = $schema->getTableInformation($table);
 
 ```
 
+## Future enhancements
+
+- Supporting more sources like postgres, oracle
+- PSR-6 cache implementation
+
 
 ## Coding standards
 
@@ -134,6 +140,6 @@ $info = $schema->getTableInformation($table);
 * [PSR 0 Autoloading standards](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md)
 
 
-[![Total Downloads](https://poser.pugx.org/soluble/schema/downloads.png)](https://packagist.org/packages/soluble/schema)
+
 
 
