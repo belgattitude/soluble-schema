@@ -22,8 +22,7 @@ Retrieve information form your database schema.
 ## Requirements
 
 - PHP engine 5.4+, 7.0+ or HHVM >= 3.2.
-- See supported platforms (Mysql, MariaDb)
-
+- See supported database platforms (Mysql, MariaDb)
 
 ## Installation
 
@@ -42,16 +41,38 @@ Most modern frameworks will include Composer out of the box, but ensure the foll
 require 'vendor/autoload.php';
 ```
 
-## Supported platforms
+## API
 
-Currently only MySQL and MariaDB are supported. 
+```php
+<?php
 
-| Database     | Driver             | Source class                                         |
-|--------------|--------------------|------------------------------------------------------|
-| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
-| Mariadb 5.1+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
+use Soluble\Schema;
 
-To implement new sources for information schema (oracle, postgres...), just extends the `Soluble\Schema\Source\AbstractSource` class and send a pull request.
+$pdo = new \PDO("mysql:host=$hostname", $username, $password, [
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+]);
+
+$schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
+```
+
+| Method                          | Return    | Description                                 |
+|---------------------------------|-----------|---------------------------------------------|
+| Schema level methods                                                                      |
+|===========================================================================================|
+| `getTables()`                   | `array`   | Retrieve table names                        |
+| `getTablesInformation()`        | `array`   | Retrieve extended tables information        |
+| `hasTable()`                    | `boolean` | Whether table exists                        |
+| `getColumns($table)`            | `array`   | Retrieve column names                       |
+| `getColumnsInformation($table)` | `array`   | Retrieve extended columns information       |
+| `getPrimaryKey($table)`         | `string`  | Retrieve primary key (unique)               |
+| `getPrimaryKeys($table)`        | `array`   | Retrieve primary keys (multiple)            |
+| `getUniqueKeys($table)`         | `array`   | Retrieve unique keys                        |
+| `getForeignKeys($table)`        | `array`   | Retrieve foreign keys information           |
+| `getReferences($table)`         | `array`   | Retrieve referencing tables information     |
+
+
+
+
 
 ## Examples
 
@@ -279,12 +300,25 @@ $references = $schema->getReferences($table);
 ]
 ```
 
+## Supported platforms
 
+Currently only MySQL and MariaDB are supported. 
+
+| Database     | Driver             | Source class                                         |
+|--------------|--------------------|------------------------------------------------------|
+| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
+| Mariadb 5.1+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
+
+To implement new sources for information schema (oracle, postgres...), just extends the `Soluble\Schema\Source\AbstractSource` class and send a pull request.
 
 ## Future enhancements
 
 - Supporting more sources like postgres, oracle
 - PSR-6 cache implementation
+
+## Contributing
+
+Contribution are welcome see [contribution guide](./CONTRIBUTING.md)
 
 
 ## Coding standards
