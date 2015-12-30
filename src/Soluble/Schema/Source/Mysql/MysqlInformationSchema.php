@@ -154,10 +154,19 @@ class MysqlInformationSchema extends Source\AbstractSource
     /**
      * {@inheritdoc}
      */
-    public function getRelations($table)
+    public function getForeignKeys($table)
     {
         $this->loadCacheInformation($table);
         return self::$localCache[$this->schema]['tables'][$table]['foreign_keys'];
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getReferences($table)
+    {
+        $this->loadCacheInformation($table);
+        return self::$localCache[$this->schema]['tables'][$table]['references'];
     }
 
     /**
@@ -462,10 +471,11 @@ class MysqlInformationSchema extends Source\AbstractSource
                         $references[$referenced_table_name] = array();
                     }
 
-                    $references[$referenced_table_name][] = array(
+                    $k = "$table_name:$referenced_column_name->$column_name";
+                    $references[$referenced_table_name][$k] = array(
                         'column' => $column_name,
-                        //'referenced_table' => $table_name,
-                        'referenced_column' => $referenced_column_name,
+                        'referencing_table' => $table_name,
+                        'referencing_column' => $referenced_column_name,
                         'constraint_name' => $constraint_name
                     );
                     break;
@@ -475,8 +485,7 @@ class MysqlInformationSchema extends Source\AbstractSource
         foreach ($references as $referenced_table_name => $refs) {
             if ($tables->offsetExists($referenced_table_name)) {
                 $table = $tables[$referenced_table_name];
-                $references = $table->references;
-                $references[$referenced_table_name] = $refs;
+                $table->references = $refs;
             }
         }
 

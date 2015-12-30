@@ -117,13 +117,15 @@ $infos = $schema->getTablesInformation();
                                   ]
                       ],
     ["references"] => [ // Relations referencing this table
-                       "referencing_table_name_1" => [
-                          "column"            => "Colum name in this table",
-                          "referenced_column" => "Column name in the referenceing table", 
-                          "constraint_name"   => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
-                          ],
-                        "referencing_table_2" => [ //...
-                          ],     
+                        "ref_table:ref_column->column1" => [
+                             "column"             => "Colum name in this table",
+                             "referencing_table"  => "Referencing table name", 
+                             "referencing_column" => "Column name in the referencing table", 
+                             "constraint_name"    => "Constraint name i.e. 'FK_6A2CA10CBC21F742'"
+                           ],
+                        "ref_table:ref_column->column2" => [ 
+                             //...
+                           ]
                       ]
     ["indexes"]  => [],
     ["options"]  => [ // Specific table creation options
@@ -194,18 +196,10 @@ $columns = $schema->getColumnsInformation($table);
 ```
 
 
-### Get information about keys
+### Retrieve table primary key(s)
 
 ```php
 <?php
-
-use Soluble\Schema;
-use mysqli;
-
-$mysqli = new mysqli($hostname,$username,$password,$database);
-$mysqli->set_charset($charset);
-
-$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
 
 // Get primary key
 try {
@@ -225,55 +219,65 @@ try {
     // ...
 }
 
-// Retrieve unique keys
-$uniques = $schema->getUniqueKeys($table);
-// -> ['index_name1' =>  ['col1], ['index_name2' => ['col2', 'col3']]
-
 ```
 
-### Get information about relations
+### Retrieve information about unique keys
 
 ```php
 <?php
 
-use Soluble\Schema;
-use mysqli;
+$uniques = $schema->getUniqueKeys($table);
 
-$mysqli = new mysqli($hostname,$username,$password,$database);
-$mysqli->set_charset($charset);
-
-$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
-
-// Get table foreign keys and relations
-$relations = $schema->getRelations($table);
-
-var_dump($relations);
-
-/*
-array(5) {
-  ["brand_id"]=>
-  array(3) {
-    ["referenced_table"]=>
-    string(13) "product_brand"
-    ["referenced_column"]=>
-    string(8) "brand_id"
-    ["constraint_name"]=>
-    string(19) "FK_D34A04AD44F5D008"
-  }
-  ["group_id"]=>
-  array(3) {
-    ["referenced_table"]=>
-    string(13) "product_group"
-    ["referenced_column"]=>
-    string(8) "group_id"
-    ["constraint_name"]=>
-    string(19) "FK_D34A04ADFE54D947"
-  }
-*/
-
+// The resulting array look like
+[ 
+    "unique_index_name_1" => [
+           "column_name_1", "column_name_2"
+          ],
+    "unique_index_name_2" => [ "column_name_1" ]
+]
 
 ```
 
+### Get foreign keys informations
+
+```php
+<?php
+
+$foreign_keys = $schema->getForeignKeys($table);
+
+// The resulting array looks like
+[
+  "column_name_1" => [
+      "referenced_table"  => "Referenced table name",
+      "referenced_column" => "Referenced column name",
+      "constraint_name"   => "Constraint name i.e. 'FK_6A2CA10CBC21F742'"
+     ],
+   "column_name_2" => [ 
+      // ...  
+     ]
+]
+```
+
+### Retrieve references informations
+
+```php
+<?php
+
+$references = $schema->getReferences($table);
+
+// The resulting array looks like
+[
+    "ref_table:ref_column->column1" => [
+         "column"             => "Colum name in this table",
+         "referencing_table"  => "Referencing table name", 
+         "referencing_column" => "Column name in the referencing table", 
+         "constraint_name"    => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
+       ],
+    "ref_table:ref_column->column2" => [ 
+         //...
+       ]
+]
+```
 
 
 

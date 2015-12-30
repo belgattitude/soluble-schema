@@ -21,6 +21,16 @@ abstract class AbstractSource
      * the associative key will be 'PRIMARY'.
      *
      * If no unique keys can be found returns an empty array
+     * 
+     * <code>
+     * // The resulting array look like
+     * [ 
+     *    "unique_index_name_1" => [
+     *           "column_name_1", "column_name_2"
+     *          ],
+     *    "unique_index_name_2" => ["column_name_1"]
+     * ]
+     * </code>
      *
      * @param string $table table name
      * @param boolean $include_primary include primary keys in the list
@@ -81,8 +91,8 @@ abstract class AbstractSource
     /**
      * Retrieve full columns informations from a table
      *
-     * The returned is an array looks like
      * <code>
+     * // The resulting array looks like
      * [
      *  ["column_name_1"] => [
      *   ["type"]      => (string)  "Database type, i.e: 'char', 'int', 'bigint', 'decimal'...",
@@ -132,8 +142,22 @@ abstract class AbstractSource
 
 
     /**
-     * Retrieve foreign keys / relations information
+     * Retrieve foreign keys information
      *
+     * <code>
+     * // The resulting array looks like
+     * [
+     *    "column_name_1" => [
+     *        "referenced_table"  => "Referenced table name",
+     *        "referenced_column" => "Referenced column name",
+     *        "constraint_name"   => "Constraint name i.e. 'FK_6A2CA10CBC21F742'"
+     *    ],
+     *    "column_name_2" => [ 
+     *           // ...  
+     *    ]
+     * ]
+     * </code>
+     * 
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
@@ -143,13 +167,46 @@ abstract class AbstractSource
      *
      * @return array relations associative array ['col_name_1' => ['referenced_table' => 'tab1', 'referenced_column' => 'col1', 'constraint_name' => 'FK...']]
      */
-    abstract public function getRelations($table);
+    abstract public function getForeignKeys($table);
 
+    /**
+     * Retrieve references (relation) to the given table
+     * 
+     * References allows you to get informations about all tables
+     * referencing this table
+     *
+     * <code>
+     * // The resulting array looks like
+     * [
+     *    "ref_table:ref_column->column1" => [
+     *       "column"             => "Colum name in this table",
+     *       "referencing_table"  => "Referencing table name",
+     *       "referencing_column" => "Column name in the referencing table", 
+     *       "constraint_name"    => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
+     *    ],
+     *    "ref_table:ref_column->column2" => [ 
+     *        //...
+     *    ]
+     * ]
+     * </code>
+     * 
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\ErrorException
+     * @throws Exception\ExceptionInterface
+     * @throws Exception\TableNotFoundException
+     *
+     * @param string $table table name
+     *
+     * @return array relations associative array ['col_name_1' => ['referenced_table' => 'tab1', 'referenced_column' => 'col1', 'constraint_name' => 'FK...']]
+     */
+    
+    abstract public function getReferences($table);
+    
     /**
      * Return full information of all tables present in schema
      * 
-     * The resulting array looks like
      * <code>
+     * // The resulting array looks like
      * [
      *  ["table_name_1"] => [
      *    ["name"]    => (string) 'Table name'
@@ -175,10 +232,11 @@ abstract class AbstractSource
      *                                  ]
      *                      ],
      *    ["references"] => [ // Relations referencing this table
-     *                       "referencing_table_name_1" => [
-     *                          "column"            => "Colum name in this table",
-     *                          "referenced_column" => "Column name in the referenceing table", 
-     *                          "constraint_name"   => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
+     *                       "ref_table:ref_column->column1" => [
+     *                          "column"             => "Colum name in this table",
+     *                          "referencing_table"  => "Referencing table name", 
+     *                          "referencing_column" => "Column name in the referenceing table", 
+     *                          "constraint_name"    => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
      *                          ],
      *                        "referencing_table_2" => [ //...
      *                          ],     
