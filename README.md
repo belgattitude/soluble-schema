@@ -57,8 +57,6 @@ $schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
 
 | Method                          | Return    | Description                                 |
 |---------------------------------|-----------|---------------------------------------------|
-| Schema level methods                                                                      |
-|===========================================================================================|
 | `getTables()`                   | `array`   | Retrieve table names                        |
 | `getTablesInformation()`        | `array`   | Retrieve extended tables information        |
 | `hasTable()`                    | `boolean` | Whether table exists                        |
@@ -68,10 +66,8 @@ $schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
 | `getPrimaryKeys($table)`        | `array`   | Retrieve primary keys (multiple)            |
 | `getUniqueKeys($table)`         | `array`   | Retrieve unique keys                        |
 | `getForeignKeys($table)`        | `array`   | Retrieve foreign keys information           |
-| `getReferences($table)`         | `array`   | Retrieve referencing tables information     |
-
-
-
+| `getReferences($table)`         | `array`   | Retrieve referencing tables (relations)     |
+| `getIndexes($table)`            | `array`   | Retrieve indexes info                       |
 
 
 ## Examples
