@@ -129,8 +129,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
     public function testGetTablesInformation()
     {
         $ti = $this->metadata->getTablesInformation();
-        var_dump($ti);
-        die();
         $table = 'media';
         $this->assertInternalType('array', $ti);
         $this->assertArrayHasKey($table, $ti);

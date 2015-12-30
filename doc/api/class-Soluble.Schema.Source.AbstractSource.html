@@ -134,7 +134,7 @@
 		<b>Namespace:</b> <a href="namespace-Soluble.html">Soluble</a>\<a href="namespace-Soluble.Schema.html">Schema</a>\<a href="namespace-Soluble.Schema.Source.html">Source</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Soluble.Schema.Source.AbstractSource.html#6-252" title="Go to source code">Soluble/Schema/Source/AbstractSource.php</a>
+			<b>Located at</b> <a href="source-class-Soluble.Schema.Source.AbstractSource.html#6-287" title="Go to source code">Soluble/Schema/Source/AbstractSource.php</a>
 		<br>
 	</div>
 
@@ -349,14 +349,48 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getColumnsInformation">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#81-94" title="Go to source code">getColumnsInformation</a>( <span>string <var>$table</var></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#81-129" title="Go to source code">getColumnsInformation</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
-			<p>Retrieve columns informations from a table</p>
+			<p>Retrieve full columns informations from a table</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Retrieve columns informations from a table</p>
+			<p>Retrieve full columns informations from a table</p>
+
+<p>The returned is an array composed</p>
+
+<pre>[
+ [<span class="php-quote">'column_name_1'</span>] =&gt; [
+  [<span class="php-quote">'type'</span>]      =&gt; (string)  <span class="php-quote">'Database type, i.e: char, int, bigint, decimal...'</span>,
+  [<span class="php-quote">'primary'</span>]   =&gt; (boolean) <span class="php-quote">'Whether column is (part of) a primary key'</span>,
+  [<span class="php-quote">'nullable'</span>]  =&gt; (boolean) <span class="php-quote">'Whether column is nullable'</span>,
+  [<span class="php-quote">'default'</span>]   =&gt; (string)  <span class="php-quote">'Default value for column or null if none'</span>,
+
+  <span class="php-comment">// Specific to numeric, decimal, boolean... types</span>
+  [<span class="php-quote">&quot;unsigned&quot;</span>]  =&gt; (boolean) <span class="php-quote">'Whether the column is unsigned'</span>,
+  [<span class="php-quote">&quot;precision&quot;</span>] =&gt; (int)     <span class="php-quote">'Number precision (or length)'</span>,
+
+  <span class="php-comment">// Specific to character oriented types as well as enum, blobs...</span>
+  [<span class="php-quote">'length'</span>]       =&gt; (int) <span class="php-quote">'Maximum length'</span>,
+  [<span class="php-quote">&quot;octet_length&quot;</span>] =&gt; (int) <span class="php-quote">'Maximum length in octets (differs from length when using multibyte charsets'</span>,
+
+  <span class="php-comment">// Columns specific ddl information</span>
+  [<span class="php-quote">&quot;options&quot;</span>]  =&gt; <span class="php-quote">'Column specific options'</span>
+         [
+           <span class="php-quote">'comment'</span>          =&gt; <span class="php-quote">'Column comment'</span>,
+           <span class="php-quote">'definition'</span>       =&gt; <span class="php-quote">'DDL definition, i.e. varchar(250)'</span>,
+           <span class="php-quote">'ordinal_position'</span> =&gt; <span class="php-quote">'Column position number'</span>,
+           <span class="php-quote">'constraint_type'</span>  =&gt; <span class="php-quote">'Type of constraint if applicable'</span>,
+           <span class="php-quote">'column_key'</span>       =&gt; <span class="php-quote">''</span>,
+           <span class="php-quote">'charset'</span>          =&gt; <span class="php-quote">'Column charset, i.e. utf8'</span>,
+           <span class="php-quote">'collation'</span>        =&gt; <span class="php-quote">'Column collation, i.e. utf8_unicode_ci'</span>
+         ],
+  ],
+  [<span class="php-quote">'column_name_2'</span>] =&gt; [
+      <span class="php-comment">//...</span>
+  ]
+]</pre>
 
 
 				<h4>Parameters</h4>
@@ -399,25 +433,25 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getRelations">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#97-109" title="Go to source code">getRelations</a>( <span>string <var>$table</var></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#132-144" title="Go to source code">getRelations</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
-			<p>Return relations information</p>
+			<p>Retrieve foreign keys / relations information</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Return relations information</p>
+			<p>Retrieve foreign keys / relations information</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$table</var></dt>
-					<dd></dd>
+					<dd>table name</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					array<br>relations
+					array<br>relations associative array ['col_name_1' => ['referenced_table' => 'tab1', 'referenced_column' => 'col1', 'constraint_name' => 'FK...']]
 				</div>
 
 				<h4>Throws</h4>
@@ -445,7 +479,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getTablesInformation">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#111-120" title="Go to source code">getTablesInformation</a>( )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#146-155" title="Go to source code">getTablesInformation</a>( )</code>
 
 		<div class="description short">
 			<p>Return full information of all tables present in schema</p>
@@ -485,7 +519,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getColumns">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#124-138" title="Go to source code">getColumns</a>( <span>string <var>$table</var></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#159-173" title="Go to source code">getColumns</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
 			<p>Return column information</p>
@@ -531,7 +565,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getTableInformation">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#141-155" title="Go to source code">getTableInformation</a>( <span>string <var>$table</var></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#176-190" title="Go to source code">getTableInformation</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
 			<p>Return information about a specific table</p>
@@ -576,7 +610,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getTables">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#157-169" title="Go to source code">getTables</a>( )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#192-204" title="Go to source code">getTables</a>( )</code>
 
 		<div class="description short">
 			<p>Return a list of table names</p>
@@ -616,7 +650,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_hasTable">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#172-186" title="Go to source code">hasTable</a>( <span>string <var>$table</var></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#207-221" title="Go to source code">hasTable</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
 			<p>Check whether a table exists in the specified or current scheme</p>
@@ -661,7 +695,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_validateSchema">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#209-223" title="Go to source code">validateSchema</a>( <span>string <var>$schema</var></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#244-258" title="Go to source code">validateSchema</a>( <span>string <var>$schema</var></span> )</code>
 
 		<div class="description short">
 			<p>Check whether a schema parameter is valid</p>
@@ -704,7 +738,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setDefaultSchema">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#225-237" title="Go to source code">setDefaultSchema</a>( <span>string <var>$schema</var></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#260-272" title="Go to source code">setDefaultSchema</a>( <span>string <var>$schema</var></span> )</code>
 
 		<div class="description short">
 			<p>Set default schema</p>
@@ -747,7 +781,7 @@ the associative key will be 'PRIMARY'.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_checkTableArgument">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#239-251" title="Go to source code">checkTableArgument</a>( <span>string <var>$table</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.AbstractSource.html#274-286" title="Go to source code">checkTableArgument</a>( <span>string <var>$table</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			

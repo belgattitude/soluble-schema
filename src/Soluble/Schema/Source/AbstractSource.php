@@ -79,8 +79,43 @@ abstract class AbstractSource
 
 
     /**
-     * Retrieve columns informations from a table
+     * Retrieve full columns informations from a table
      *
+     * The returned is an array composed 
+     * <code>
+     * [
+     *  ["column_name_1"] => [
+     *   ["type"]      => (string)  "Database type, i.e: 'char', 'int', 'bigint', 'decimal'...",
+     *   ["primary"]   => (boolean) "Whether column is (part of) a primary key",
+     *   ["nullable"]  => (boolean) "Whether column is nullable",
+     *   ["default"]   => (string)  "Default value for column or null if none",
+     *
+     *   // Specific to numeric, decimal, boolean... types
+     *   ["unsigned"]  => (boolean) "Whether the column is unsigned",
+     *   ["precision"] => (int)     "Number precision (or maximum length)",
+     *
+     *   // Specific to character oriented types as well as enum, blobs...
+     *   ["length"]       => (int) "Maximum length",
+     *   ["octet_length"] => (int) "Maximum length in octets (differs from length when using multibyte charsets",
+     *
+     *   // Columns specific ddl information
+     *   ["options"]  => 'Column specific options'
+     *          [
+     *            "comment"          => "Column comment",
+     *            "definition"       => "DDL definition, i.e. varchar(250)",
+     *            "ordinal_position" => "Column position number",
+     *            "constraint_type"  => "Type of constraint if applicable",
+     *            "column_key"       => "",
+     *            "charset"          => "Column charset, i.e. 'utf8'",
+     *            "collation"        => "Column collation, i.e. 'utf8_unicode_ci'"
+     *          ],
+     *   ],
+     *   ["column_name_2"] => [ 
+     *       //... 
+     *   ]
+     * ]
+     * </code>
+     * 
      * @see \Soluble\Schema\Source\AbstractSource::getColumns() for only column names
      * 
      * @throws Exception\InvalidArgumentException

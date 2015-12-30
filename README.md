@@ -55,28 +55,45 @@ To implement new sources for information schema (oracle, postgres...), just exte
 
 ## Examples
 
-### Retrieve table informations in a database schema
+### Mysqli, PDO_mysql connection examples
 
 ```php
 <?php
 
 use Soluble\Schema;
-use PDO;
 
-$pdo = new PDO("mysql:host=$hostname", $username, $password, [
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+// With PDO_mysql driver
+
+$pdo = new \PDO("mysql:host=$hostname", $username, $password, [
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
 ]);
 
 $schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
 
-// Retrieve full information of all tables in schema
-$info = $schema->getTablesInformation();
+// Alternatively with mysqli driver
+
+$mysqli = new \mysqli($hostname,$username,$password,$database);
+$mysqli->set_charset($charset);
+
+$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
+
+```
+
+
+### Retrieve table informations in a database schema
+
+```php
+<?php
+
+// Retrieve table names defined in schema
+$tables = $schema->getTables();
+
+// Retrieve full information of tables defined in schema
+$infos = $schema->getTablesInformation();
 
 /*
-Return an associative array index by table names.
-
-Each table contains informations about
-[
+ Associative array with 
+ [
   ['table_name_1'] => [
     ['name']         => 'Table name'
     ['columns']      => 'Associative array with column names'
@@ -102,44 +119,70 @@ Each table contains informations about
                                 'ref_table_2' => ['column' => '', 'referenced_column' => '', 'constraint_name' => ''],
                             ]
     ['indexes']      => 'Associative array'
+    ['options']      => 'Associative array with specific table creation options'
+                            [
+                                'comment'   => 'Table comment',
+                                'collation' => 'Table collation, i.e: utf8_general_ci',
+                                'type'      => 'Table type, i.e: BASE TABLE',
+                                'engine'    => 'InnoDB',
+                            ]
   ],
   ['table_name_2'] => [...]
-]
+ ]
 */
      
-// Retrieve all tables names
-$info = $schema->getTables();
-
 // Test if table exists in schema
 if ($schema->hasTable($table)) {
     //...
 }
-
 ```
 
-### Read table specific information
+### Get column informations in a table
 
 ```php
-<?php
 
-use Soluble\Schema;
-use mysqli;
-
-$mysqli = new mysqli($hostname,$username,$password,$database);
-$mysqli->set_charset($charset);
-
-$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
-
-// Retrieve column names from a table
+// Retrieve just column names from a table
 $columns = $schema->getColumns($table); 
 // -> ['col1', 'col2']
 
 // Retrieve full columns information from a tabme
 $columns = $schema->getColumnsInformation($table); 
-// -> ['colname' => ['type' => 'char', 'primary' => false, ...]]
 
+// resulting column array looks like ->
+[
+  ["column_name_1"] => [
+   ["type"]      => (string)  "Database type, i.e: 'char', 'int', 'bigint', 'decimal'...",
+   ["primary"]   => (boolean) "Whether column is (part of) a primary key",
+   ["nullable"]  => (boolean) "Whether column is nullable",
+   ["default"]   => (string)  "Default value for column or null if none",
+
+   // Specific to numeric, decimal, boolean... types
+   ["unsigned"]  => (boolean) "Whether the column is unsigned",
+   ["precision"] => (int)     "Number precision (or maximum length)",
+
+   // Specific to character oriented types as well as enum, blobs...
+   ["length"]       => (int) "Maximum length",
+   ["octet_length"] => (int) "Maximum length in octets (differs from length when using multibyte charsets",
+
+   // Columns specific ddl information
+   ["options"]  => 'Column specific options'
+          [
+            "comment"          => "Column comment",
+            "definition"       => "DDL definition, i.e. varchar(250)",
+            "ordinal_position" => "Column position number",
+            "constraint_type"  => "Type of constraint if applicable",
+            "column_key"       => "",
+            "charset"          => "Column charset, i.e. 'utf8'",
+            "collation"        => "Column collation, i.e. 'utf8_unicode_ci'"
+          ],
+   ],
+   ["column_name_2"] => [ 
+       //... 
+   ]
+]
 
 ```
+
 
 ### Get information about keys
 

@@ -29,6 +29,12 @@ class MysqlInformationSchema extends Source\AbstractSource
     protected $mysql_innodbstats_value;
 
     /**
+     * Whether to include full schema options like comment, collations...
+     * @var boolean
+     */
+    protected $include_options = true;
+    
+    /**
      *
      * @var array
      */
@@ -170,11 +176,15 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @throws Exception\TableNotFoundException
      *
      * @param string $table table name
-     * @param boolean $include_options include extended information
+     * @param boolean|null $include_options include extended information
      * @return array
      */
-    protected function getTableConfig($table, $include_options = false)
+    protected function getTableConfig($table, $include_options = null)
     {
+        if ($include_options === null) {
+            $include_options = $this->include_options;
+        }
+        
         $schema = $this->schema;
 
         if ($this->useLocalCaching &&
@@ -205,11 +215,14 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @throws Exception\ErrorException
      * @throws Exception\SchemaNotFoundException
      *
-     * @param boolean $include_options include extended information
+     * @param boolean|null $include_options include extended information
      * @return array
      */
-    protected function getSchemaConfig($include_options = false)
+    protected function getSchemaConfig($include_options = null)
     {
+        if ($include_options === null) {
+            $include_options = $this->include_options;
+        }
         $schema = $this->schema;
         if ($this->useLocalCaching && in_array($schema, self::$fullyCachedSchemas)) {
             return self::$localCache[$schema];
@@ -232,11 +245,15 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @throws Exception\ErrorException
      *
      * @param string $table
-     * @param boolean $include_options
+     * @param boolean|null $include_options
      * @return array
      */
-    protected function getObjectConfig($table = null, $include_options = false)
+    protected function getObjectConfig($table = null, $include_options = null)
     {
+        if ($include_options === null) {
+            $include_options = $this->include_options;
+        }
+        
         $schema = $this->schema;
         $qSchema = $this->adapter->quoteValue($schema);
 
@@ -370,22 +387,22 @@ class MysqlInformationSchema extends Source\AbstractSource
             $has_charset = false;
             if (in_array($data_type, array('int', 'tinyint', 'mediumint', 'bigint', 'int', 'smallint', 'year'))) {
                 $col_def['unsigned']  = (bool) preg_match('/unsigned/', strtolower($r['column_type']));
-                $col_def['precision'] = $r['numeric_precision'];
+                $col_def['precision'] = is_numeric($r['numeric_precision']) ? (int) $r['numeric_precision'] : null;
             } elseif (in_array($data_type, array('real', 'double precision', 'decimal', 'numeric', 'float', 'dec', 'fixed'))) {
-                $col_def['precision'] = $r['numeric_precision'];
-                $col_def['scale']     = $r['numeric_scale'];
+                $col_def['precision'] = is_numeric($r['numeric_precision']) ? (int) $r['numeric_precision'] : null;
+                $col_def['scale']     = is_numeric($r['numeric_scale']) ? (int) $r['numeric_scale'] : null;
             } elseif (in_array($data_type, array('timestamp', 'date', 'time', 'datetime'))) {
                 // nothing yet
             } elseif (in_array($data_type, array('char', 'varchar', 'binary', 'varbinary', 'text', 'tinytext', 'mediumtext', 'longtext'))) {
-                $col_def['octet_length'] = $r['character_octet_length'];
-                $col_def['length'] = $r['character_maximum_length'];
+                $col_def['octet_length'] = is_numeric($r['character_octet_length']) ? (int) $r['character_octet_length'] : null;
+                $col_def['length'] = is_numeric($r['character_maximum_length']) ? (int) $r['character_maximum_length'] : null;
                 $has_charset = true;
             } elseif (in_array($data_type, array('blob', 'tinyblob', 'mediumblob', 'longblob'))) {
-                $col_def['octet_length'] = $r['character_octet_length'];
-                $col_def['length'] = $r['character_maximum_length'];
+                $col_def['octet_length'] = (int) $r['character_octet_length'];
+                $col_def['length'] = (int) $r['character_maximum_length'];
             } elseif (in_array($data_type, array('enum', 'set'))) {
-                $col_def['octet_length'] = $r['character_octet_length'];
-                $col_def['length'] = $r['character_maximum_length'];
+                $col_def['octet_length'] = (int) $r['character_octet_length'];
+                $col_def['length'] = (int) $r['character_maximum_length'];
                 $def = $r['column_type'];
 
                 preg_match_all("/'([^']+)'/", $def, $matches);
