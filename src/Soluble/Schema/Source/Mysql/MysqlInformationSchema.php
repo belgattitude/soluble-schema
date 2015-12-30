@@ -208,7 +208,7 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @param boolean $include_options include extended information
      * @return array
      */
-    public function getSchemaConfig($include_options = false)
+    protected function getSchemaConfig($include_options = false)
     {
         $schema = $this->schema;
         if ($this->useLocalCaching && in_array($schema, self::$fullyCachedSchemas)) {

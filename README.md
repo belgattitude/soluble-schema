@@ -55,7 +55,7 @@ To implement new sources for information schema (oracle, postgres...), just exte
 
 ## Examples
 
-### Read MySQL information schema
+### Retrieve table informations in a database schema
 
 ```php
 <?php
@@ -69,19 +69,51 @@ $pdo = new PDO("mysql:host=$hostname", $username, $password, [
 
 $schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
 
-// All schema configuration
-$config = $schema->getSchemaConfig();
-var_dump($config);
+// Retrieve full information of all tables in schema
+$info = $schema->getTablesInformation();
+
+/*
+Return an associative array index by table names.
+
+Each table contains informations about
+[
+  ['table_name_1'] => [
+    ['name']         => 'Table name'
+    ['columns']      => 'Associative array with column names'
+                            [
+                              'col name_1' => ['name' => '', 'type' => '', ...]',
+                              'col name_2' => ['name' => '', 'type' => '', ...]',
+                            ]
+
+    ['primary_keys'] => 'Indexed array with primary column name(s)'
+    ['unique_keys']  => 'Associative array with each unique indexes'
+                            [
+                              'index name_1' => ['col1', 'col2']',
+                              'index_name_2' => ['col3']
+                            ]
+    ['foreign_keys'] => 'Associative array with foreign keys specifications'
+                            [
+                                'col_1' => ['column' => '', 'referenced_column' => '', 'referenced_table' => ''],
+                                'col_2' => ['column' => '', 'referenced_column' => '', 'referenced_table' => '']
+                            ]
+    ['references']   => 'Associative array with relations from other tables'
+                            [
+                                'ref_table_1' => ['column' => '', 'referenced_column' => '', 'constraint_name' => ''],
+                                'ref_table_2' => ['column' => '', 'referenced_column' => '', 'constraint_name' => ''],
+                            ]
+    ['indexes']      => 'Associative array'
+  ],
+  ['table_name_2'] => [...]
+]
+*/
+     
+// Retrieve all tables names
+$info = $schema->getTables();
 
 // Test if table exists in schema
 if ($schema->hasTable($table)) {
     //...
 }
-
-// 
-// Full table information
-$info = $schema->getTableInformation($table);
-
 
 ```
 
