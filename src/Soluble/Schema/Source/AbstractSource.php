@@ -14,16 +14,22 @@ abstract class AbstractSource
 
 
     /**
-     * Get unique keys on table
+     * Return all uniques keys defined for a table.
+     *
+     * By default it does not include the primary key, simply set
+     * the $include_primary parameter to true to get it. In this case
+     * the associative key will be 'PRIMARY'.
+     *
+     * If no unique keys can be found returns an empty array
      *
      * @param string $table table name
      * @param boolean $include_primary include primary keys in the list
+     * 
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
-     * @throws Exception\NoPrimaryKeyException
      * @throws Exception\ExceptionInterface
      * @throws Exception\TableNotFoundException
-     * @return array
+     * @return array associative ['index_name' => ['col1', 'col2'], 'index_name_2' => ['col3']]
      */
     abstract public function getUniqueKeys($table, $include_primary = false);
 
@@ -42,16 +48,17 @@ abstract class AbstractSource
     abstract public function getIndexesInformation($table);
 
     /**
-     * Return unique table primary key
+     * Return table primary key
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\NoPrimaryKeyException when no pk or multiple pk found
+     * @throws Exception\MultiplePrimaryKeyException when multiple pk found 
      * @throws Exception\ExceptionInterface
      * @throws Exception\TableNotFoundException
      *
      * @param string $table
-     * @return string|int primary key
+     * @return string primary key
      */
     abstract public function getPrimaryKey($table);
 
@@ -66,47 +73,49 @@ abstract class AbstractSource
      * @throws Exception\TableNotFoundException
      *
      * @param string $table
-     * @return array primary keys
+     * @return array primary keys ['col1', 'col3']
      */
     abstract public function getPrimaryKeys($table);
 
 
     /**
-     * Return column information
+     * Retrieve columns informations from a table
      *
+     * @see \Soluble\Schema\Source\AbstractSource::getColumns() for only column names
+     * 
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      * @throws Exception\TableNotFoundException
      *
-     * @param string $table
-     * @return array associative array [column_name => infos]
+     * @param string $table table name
+     * @return array associative array i.e. ['colname' => ['type' => 'char', 'primary' => false, ...]]
      */
     abstract public function getColumnsInformation($table);
 
 
     /**
-     * Return relations information
+     * Retrieve foreign keys / relations information
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      * @throws Exception\TableNotFoundException
      *
-     * @param string $table
+     * @param string $table table name
      *
-     * @return array relations
+     * @return array relations associative array ['col_name_1' => ['referenced_table' => 'tab1', 'referenced_column' => 'col1', 'constraint_name' => 'FK...']]
      */
     abstract public function getRelations($table);
 
     /**
-     * Return table informations
+     * Return full information of all tables present in schema
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      *
-     * @return array associative array indexed by table_name
+     * @return array associative array indexed by table name
      */
     abstract public function getTablesInformation();
 
@@ -136,7 +145,7 @@ abstract class AbstractSource
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      *
-     * @param string $table
+     * @param string $table table name
      * @return array
      */
     public function getTableInformation($table)
@@ -152,7 +161,7 @@ abstract class AbstractSource
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      *
-     * @return array
+     * @return array indexed array with table names: ['table1', 'table2']
      */
     public function getTables()
     {

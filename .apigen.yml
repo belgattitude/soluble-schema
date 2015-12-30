@@ -1,0 +1,13 @@
+title: soluble-schema API
+source:
+    - src
+    
+destination: doc/api
+
+internal: false
+
+todo: yes
+
+
+
+

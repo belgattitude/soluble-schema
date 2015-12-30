@@ -49,7 +49,8 @@ class MysqlInformationSchema extends Source\AbstractSource
 
 
     /**
-     *
+     * Constructor
+     * 
      * @param \PDO|\mysqli $connection
      * @param string $schema default schema, taken from adapter if not given
      * @throws Exception\InvalidArgumentException for invalid connection
@@ -77,22 +78,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
 
     /**
-     * Return all uniques keys defined for a table.
-     *
-     * By default it does not include the primary key, simply set
-     * the $include_primary parameter to true to get it. In this case
-     * the associative key will be 'PRIMARY'.
-     *
-     * If no unique keys can be found returns an empty array
-     *
-     *
-     * @param string $table table name
-     * @param boolean $include_primary include primary keys in the list (indexed as PRIMARY)
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\ErrorException
-     * @throws Exception\ExceptionInterface
-     * @throws Exception\TableNotFoundException
-     * @return array associative array 'index_name' => ['col1', 'col2'], 'index_name_2' => ['col3']
+     * {@inheritdoc}
      */
     public function getUniqueKeys($table, $include_primary = false)
     {
@@ -113,16 +99,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
 
     /**
-     * Return indexes information on a table
-     *
-     * @param string $table table name
-     *
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\ErrorException
-     * @throws Exception\ExceptionInterface
-     * @throws Exception\TableNotFoundException
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getIndexesInformation($table)
     {
@@ -131,18 +108,7 @@ class MysqlInformationSchema extends Source\AbstractSource
     }
 
     /**
-     * Return unique table primary key
-     *
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\ErrorException
-     * @throws Exception\NoPrimaryKeyException when no pk
-     * @throws Exception\MultiplePrimaryKeyException when multiple pk found
-     * @throws Exception\ExceptionInterface
-     * @throws Exception\TableNotFoundException
-     *
-     * @param string $table
-     *
-     * @return string|int primary key
+     * {@inheritdoc}
      */
     public function getPrimaryKey($table)
     {
@@ -156,17 +122,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
 
     /**
-     * Return composite primary keys
-     *
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\ErrorException
-     * @throws Exception\NoPrimaryKeyException
-     * @throws Exception\ExceptionInterface
-     * @throws Exception\TableNotFoundException
-     *
-     * @param string $table
-     *
-     * @return array primary keys
+     * {@inheritdoc}
      */
     public function getPrimaryKeys($table)
     {
@@ -180,15 +136,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
 
     /**
-     * Return column information
-     *
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\ErrorException
-     * @throws Exception\ExceptionInterface
-     * @throws Exception\TableNotFoundException
-     *
-     * @param string $table
-     * @return array associative array [column_name => infos]
+     * {@inheritdoc}
      */
     public function getColumnsInformation($table)
     {
@@ -198,16 +146,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
 
     /**
-     * Return relations information
-     *
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\ErrorException
-     * @throws Exception\ExceptionInterface
-     * @throws Exception\TableNotFoundException
-     *
-     * @param string $table
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getRelations($table)
     {
@@ -216,21 +155,13 @@ class MysqlInformationSchema extends Source\AbstractSource
     }
 
     /**
-     * Return table informations
-     *
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\ErrorException
-     * @throws Exception\ExceptionInterface
-     *
-     * @return array associative array indexed by table_name
+     * {@inheritdoc}
      */
     public function getTablesInformation()
     {
         $this->loadCacheInformation(null);
         return self::$localCache[$this->schema]['tables'];
     }
-
-
 
     /**
      * Get a table configuration
@@ -242,7 +173,7 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @param boolean $include_options include extended information
      * @return array
      */
-    public function getTableConfig($table, $include_options = false)
+    protected function getTableConfig($table, $include_options = false)
     {
         $schema = $this->schema;
 
@@ -250,7 +181,6 @@ class MysqlInformationSchema extends Source\AbstractSource
                 isset(self::$localCache[$schema]['tables'][$table])) {
             return self::$localCache[$schema]['tables'][$table];
         }
-
 
         $config = $this->getObjectConfig($table, $include_options);
 

@@ -11,7 +11,7 @@
 
 ## Introduction
 
-Database information schema parser
+Retrieve information form your database schema.
 
 ## Features
 
@@ -78,6 +78,11 @@ if ($schema->hasTable($table)) {
     //...
 }
 
+// 
+// Full table information
+$info = $schema->getTableInformation($table);
+
+
 ```
 
 ### Read table specific information
@@ -93,8 +98,29 @@ $mysqli->set_charset($charset);
 
 $schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
 
-// Get table columns
-$columns = $schema->getColumns($columns);
+// Retrieve column names from a table
+$columns = $schema->getColumns($table); 
+// -> ['col1', 'col2']
+
+// Retrieve full columns information from a tabme
+$columns = $schema->getColumnsInformation($table); 
+// -> ['colname' => ['type' => 'char', 'primary' => false, ...]]
+
+
+```
+
+### Get information about keys
+
+```php
+<?php
+
+use Soluble\Schema;
+use mysqli;
+
+$mysqli = new mysqli($hostname,$username,$password,$database);
+$mysqli->set_charset($charset);
+
+$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
 
 // Get primary key
 try {
@@ -114,17 +140,57 @@ try {
     // ...
 }
 
-// Get unique keys
+// Retrieve unique keys
 $uniques = $schema->getUniqueKeys($table);
+// -> ['index_name1' =>  ['col1], ['index_name2' => ['col2', 'col3']]
 
+```
+
+### Get information about relations
+
+```php
+<?php
+
+use Soluble\Schema;
+use mysqli;
+
+$mysqli = new mysqli($hostname,$username,$password,$database);
+$mysqli->set_charset($charset);
+
+$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
 
 // Get table foreign keys and relations
 $relations = $schema->getRelations($table);
 
-// Full table information
-$info = $schema->getTableInformation($table);
+var_dump($relations);
+
+/*
+array(5) {
+  ["brand_id"]=>
+  array(3) {
+    ["referenced_table"]=>
+    string(13) "product_brand"
+    ["referenced_column"]=>
+    string(8) "brand_id"
+    ["constraint_name"]=>
+    string(19) "FK_D34A04AD44F5D008"
+  }
+  ["group_id"]=>
+  array(3) {
+    ["referenced_table"]=>
+    string(13) "product_group"
+    ["referenced_column"]=>
+    string(8) "group_id"
+    ["constraint_name"]=>
+    string(19) "FK_D34A04ADFE54D947"
+  }
+*/
+
 
 ```
+
+
+
 
 ## Future enhancements
 

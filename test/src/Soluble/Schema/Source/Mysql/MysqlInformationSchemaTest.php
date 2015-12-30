@@ -71,12 +71,13 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('product', $schema['tables']));
     }
 
+    /*
     public function testGetTableConfigThrowsTableNotFoundException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\TableNotFoundException');
         $config = $this->metadata->getTableConfig('table_unexistent_999');
-    }
-
+    }*/
+/*
     public function testGetTableConfig()
     {
         $table = "product_brand";
@@ -92,10 +93,11 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $config['columns']['created_by']['primary']);
         $this->assertEquals(true, $config['columns']['brand_id']['primary']);
     }
-
+    */
     public function testGetRelations()
     {
         $relations = $this->metadata->getRelations('product');
+        
         $this->assertInternalType('array', $relations);
         $this->assertArrayHasKey('brand_id', $relations);
         $this->assertArrayHasKey('referenced_column', $relations['unit_id']);
@@ -123,7 +125,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
     public function testGetUniqueKeys()
     {
         $unique = $this->metadata->getUniqueKeys('test_table_with_unique_key');
-
         $this->assertInternalType('array', $unique);
         $this->assertEquals(1, count($unique));
         $this->assertArrayHasKey('unique_id_1', $unique);
@@ -187,6 +188,18 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('password', $columns[4]);
     }
 
+    public function testGetColumnsInformation()
+    {
+        $infos = $this->metadata->getColumnsInformation('user');
+
+        $columns = array_keys($infos);
+        $this->assertEquals('user_id', $columns[0]);
+        $this->assertEquals('password', $columns[4]);
+
+        $this->assertEquals('int', $infos['user_id']['type']);
+    }
+    
+    
     public function testGetTableInformation()
     {
         $info = $this->metadata->getTableInformation('user');

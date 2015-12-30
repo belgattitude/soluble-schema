@@ -108,7 +108,23 @@ standards checks, and provides configuration for our selected checks.
 If you allow `phpcbf` to fix CS issues, please re-run the tests to ensure
 they pass, and make sure you add and commit the changes after verification.
 
-## Recommended Workflow for Contributions
+## Generate api
+
+Install ApiGen globally
+
+  ```console
+  composer global require --dev apigen/apigen
+  ```
+
+Run ApiGen in the project root folder
+
+  ```console
+  ~/.composer/vendor/bin/apigen generate --config=./.apigen.yml
+  ```
+
+Generated API should be available in doc/api folder
+
+## Recommended Workflow for contributions
 
 Your first step is to establish a public repository from which we can
 pull your work into the master repository. We recommend using
