@@ -11,26 +11,24 @@
 
 ## Introduction
 
-Retrieve information form your database schema.
+Retrieve information form your database information schema.
 
 ## Features
 
-- Read database information schema
-- Support tables, index, relations, unique keys...
-- Get specific table information 
+- Schema discovery made easy.
+- Provide an abstraction layer over information tables.
+- Support database extended informations (indexes, relations...)
 
 ## Requirements
 
 - PHP engine 5.4+, 7.0+ or HHVM >= 3.2.
-- See supported database platforms (Mysql, MariaDb)
+- Currently supported database platforms (Mysql, MariaDb)
 
 ## Installation
 
-### Installation in your PHP project
+Instant installation via [composer](http://getcomposer.org/).
 
-`Soluble\Schema` works best via [composer](http://getcomposer.org/).
-
-```sh
+```console
 php composer require soluble/schema:0.*
 ```
 Most modern frameworks will include Composer out of the box, but ensure the following file is included:
@@ -41,21 +39,38 @@ Most modern frameworks will include Composer out of the box, but ensure the foll
 require 'vendor/autoload.php';
 ```
 
-## API
+## Quick start
+
+### Connection
+
+Initialize the `Schema\Source\Mysql\MysqlInformationSchema` with a valid `PDO` or `mysqli` connection.
 
 ```php
 <?php
 
 use Soluble\Schema;
 
-$pdo = new \PDO("mysql:host=$hostname", $username, $password, [
+$conn = new \PDO("mysql:host=$hostname", $username, $password, [
             \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
 ]);
 
-$schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
+/* Alternatively, use a \mysqli connection instead of PDO */
+// $conn = new \mysqli($hostname,$username,$password,$database);
+// $conn->set_charset($charset);
+
+$schema = new Schema\Source\Mysql\MysqlInformationSchema($conn);
+
+// By default the schema (database) is taken from current connection. 
+// If you wnat to query a different schema, set it in the second parameter.
+$otherDbSchema = new Schema\Source\Mysql\MysqlInformationSchema($conn, 'otherDbSchema');
 ```
 
-| Method                          | Return    | Description                                 |
+
+### API methods
+
+Once a `Schema\Source\AbstractSource` is intitalized, you have access to the following methods
+
+| Methods                         | Return    | Description                                 |
 |---------------------------------|-----------|---------------------------------------------|
 | `getTables()`                   | `array`   | Retrieve table names                        |
 | `getTablesInformation()`        | `array`   | Retrieve extended tables information        |
@@ -71,30 +86,6 @@ $schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
 
 
 ## Examples
-
-### Mysqli, PDO_mysql connection examples
-
-```php
-<?php
-
-use Soluble\Schema;
-
-// With PDO_mysql driver
-
-$pdo = new \PDO("mysql:host=$hostname", $username, $password, [
-            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-]);
-
-$schema = new Schema\Source\Mysql\MysqlInformationSchema($pdo);
-
-// Alternatively with mysqli driver
-
-$mysqli = new \mysqli($hostname,$username,$password,$database);
-$mysqli->set_charset($charset);
-
-$schema = new Schema\Source\Mysql\MysqlInformationSchema($mysqli);
-
-```
 
 
 ### Retrieve table informations in a database schema
