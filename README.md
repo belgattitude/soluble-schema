@@ -70,19 +70,20 @@ $otherDbSchema = new Schema\Source\Mysql\MysqlInformationSchema($conn, 'otherDbS
 
 Once a `Schema\Source\AbstractSource` is intitalized, you have access to the following methods
 
-| Methods                         | Return    | Description                                 |
-|---------------------------------|-----------|---------------------------------------------|
-| `getTables()`                   | `array`   | Retrieve table names                        |
-| `getTablesInformation()`        | `array`   | Retrieve extended tables information        |
-| `hasTable()`                    | `boolean` | Whether table exists                        |
-| `getColumns($table)`            | `array`   | Retrieve column names                       |
-| `getColumnsInformation($table)` | `array`   | Retrieve extended columns information       |
-| `getPrimaryKey($table)`         | `string`  | Retrieve primary key (unique)               |
-| `getPrimaryKeys($table)`        | `array`   | Retrieve primary keys (multiple)            |
-| `getUniqueKeys($table)`         | `array`   | Retrieve unique keys                        |
-| `getForeignKeys($table)`        | `array`   | Retrieve foreign keys information           |
-| `getReferences($table)`         | `array`   | Retrieve referencing tables (relations)     |
-| `getIndexes($table)`            | `array`   | Retrieve indexes info                       |
+| Methods                         | Return        | Description                                 |
+|---------------------------------|---------------|---------------------------------------------|
+| `getSchemaConfig()`             | `ArrayObject` | Retrieve full extended schema config        |
+| `getTables()`                   | `array`       | Retrieve table names                        |
+| `getTablesInformation()`        | `array`       | Retrieve extended tables information        |
+| `hasTable()`                    | `boolean`     | Whether table exists                        |
+| `getColumns($table)`            | `array`       | Retrieve column names                       |
+| `getColumnsInformation($table)` | `array`       | Retrieve extended columns information       |
+| `getPrimaryKey($table)`         | `string`      | Retrieve primary key (unique)               |
+| `getPrimaryKeys($table)`        | `array`       | Retrieve primary keys (multiple)            |
+| `getUniqueKeys($table)`         | `array`       | Retrieve unique keys                        |
+| `getForeignKeys($table)`        | `array`       | Retrieve foreign keys information           |
+| `getReferences($table)`         | `array`       | Retrieve referencing tables (relations)     |
+| `getIndexes($table)`            | `array`       | Retrieve indexes info                       |
 
 
 ## Examples
