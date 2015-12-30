@@ -33,7 +33,7 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @var boolean
      */
     protected $include_options = true;
-    
+
     /**
      *
      * @var array
@@ -56,7 +56,7 @@ class MysqlInformationSchema extends Source\AbstractSource
 
     /**
      * Constructor
-     * 
+     *
      * @param \PDO|\mysqli $connection
      * @param string $schema default schema, taken from adapter if not given
      * @throws Exception\InvalidArgumentException for invalid connection
@@ -159,7 +159,7 @@ class MysqlInformationSchema extends Source\AbstractSource
         $this->loadCacheInformation($table);
         return self::$localCache[$this->schema]['tables'][$table]['foreign_keys'];
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -193,7 +193,7 @@ class MysqlInformationSchema extends Source\AbstractSource
         if ($include_options === null) {
             $include_options = $this->include_options;
         }
-        
+
         $schema = $this->schema;
 
         if ($this->useLocalCaching &&
@@ -262,7 +262,7 @@ class MysqlInformationSchema extends Source\AbstractSource
         if ($include_options === null) {
             $include_options = $this->include_options;
         }
-        
+
         $schema = $this->schema;
         $qSchema = $this->adapter->quoteValue($schema);
 

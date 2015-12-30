@@ -21,10 +21,10 @@ abstract class AbstractSource
      * the associative key will be 'PRIMARY'.
      *
      * If no unique keys can be found returns an empty array
-     * 
+     *
      * <code>
      * // The resulting array look like
-     * [ 
+     * [
      *    "unique_index_name_1" => [
      *           "column_name_1", "column_name_2"
      *          ],
@@ -34,7 +34,7 @@ abstract class AbstractSource
      *
      * @param string $table table name
      * @param boolean $include_primary include primary keys in the list
-     * 
+     *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
@@ -63,7 +63,7 @@ abstract class AbstractSource
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\NoPrimaryKeyException when no pk or multiple pk found
-     * @throws Exception\MultiplePrimaryKeyException when multiple pk found 
+     * @throws Exception\MultiplePrimaryKeyException when multiple pk found
      * @throws Exception\ExceptionInterface
      * @throws Exception\TableNotFoundException
      *
@@ -99,7 +99,7 @@ abstract class AbstractSource
      *   ["primary"]   => (boolean) "Whether column is (part of) a primary key",
      *   ["nullable"]  => (boolean) "Whether column is nullable",
      *   ["default"]   => (string)  "Default value for column or null if none",
-     * 
+     *
      *   // Specific to primary key(s) columns
      *   ["autoincrement"] => (boolean) "Whether the primary key is autoincremented"
      *
@@ -122,14 +122,14 @@ abstract class AbstractSource
      *            "collation"        => "Column collation, i.e. 'utf8_unicode_ci'"
      *          ],
      *   ],
-     *   ["column_name_2"] => [ 
-     *       //... 
+     *   ["column_name_2"] => [
+     *       //...
      *   ]
      * ]
      * </code>
-     * 
+     *
      * @see \Soluble\Schema\Source\AbstractSource::getColumns() for only column names
-     * 
+     *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
@@ -152,12 +152,12 @@ abstract class AbstractSource
      *        "referenced_column" => "Referenced column name",
      *        "constraint_name"   => "Constraint name i.e. 'FK_6A2CA10CBC21F742'"
      *    ],
-     *    "column_name_2" => [ 
-     *           // ...  
+     *    "column_name_2" => [
+     *           // ...
      *    ]
      * ]
      * </code>
-     * 
+     *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
@@ -171,7 +171,7 @@ abstract class AbstractSource
 
     /**
      * Retrieve references (relation) to the given table
-     * 
+     *
      * References allows you to get informations about all tables
      * referencing this table
      *
@@ -181,15 +181,15 @@ abstract class AbstractSource
      *    "ref_table:ref_column->column1" => [
      *       "column"             => "Colum name in this table",
      *       "referencing_table"  => "Referencing table name",
-     *       "referencing_column" => "Column name in the referencing table", 
+     *       "referencing_column" => "Column name in the referencing table",
      *       "constraint_name"    => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
      *    ],
-     *    "ref_table:ref_column->column2" => [ 
+     *    "ref_table:ref_column->column2" => [
      *        //...
      *    ]
      * ]
      * </code>
-     * 
+     *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
@@ -199,18 +199,18 @@ abstract class AbstractSource
      *
      * @return array relations associative array ['col_name_1' => ['referenced_table' => 'tab1', 'referenced_column' => 'col1', 'constraint_name' => 'FK...']]
      */
-    
+
     abstract public function getReferences($table);
-    
+
     /**
      * Return full information of all tables present in schema
-     * 
+     *
      * <code>
      * // The resulting array looks like
      * [
      *  ["table_name_1"] => [
      *    ["name"]    => (string) 'Table name'
-     *    ["columns"] => [ // Columns information, 
+     *    ["columns"] => [ // Columns information,
      *                     // @see AbstractSource::getColumnsInformation()
      *                     "col name_1" => ["name" => "", "type" => "", ...]',
      *                     "col name_2" => ["name" => "", "type" => "", ...]'
@@ -228,18 +228,18 @@ abstract class AbstractSource
      *                                    "referenced_column" => "Referenced column name",
      *                                    "constraint_name"   => "Constraint name i.e. 'FK_6A2CA10CBC21F742'"
      *                                  ],
-     *                       "col_2" => [ // ...  
+     *                       "col_2" => [ // ...
      *                                  ]
      *                      ],
      *    ["references"] => [ // Relations referencing this table
      *                       "ref_table:ref_column->column1" => [
      *                          "column"             => "Colum name in this table",
-     *                          "referencing_table"  => "Referencing table name", 
-     *                          "referencing_column" => "Column name in the referenceing table", 
+     *                          "referencing_table"  => "Referencing table name",
+     *                          "referencing_column" => "Column name in the referenceing table",
      *                          "constraint_name"    => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
      *                          ],
      *                        "referencing_table_2" => [ //...
-     *                          ],     
+     *                          ],
      *                      ]
      *    ["indexes"]  => [],
      *    ['options']  => [ // Specific table creation options
@@ -348,7 +348,7 @@ abstract class AbstractSource
         }
         return $this;
     }
-    
+
 
     /**
      * Check whether a schema parameter is valid

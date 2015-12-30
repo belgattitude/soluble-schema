@@ -144,7 +144,7 @@
 		<b>Namespace:</b> <a href="namespace-Soluble.html">Soluble</a>\<a href="namespace-Soluble.Schema.html">Schema</a>\<a href="namespace-Soluble.Schema.Source.html">Source</a>\<a href="namespace-Soluble.Schema.Source.Mysql.html">Mysql</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#9-569" title="Go to source code">Soluble/Schema/Source/Mysql/MysqlInformationSchema.php</a>
+			<b>Located at</b> <a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#9-578" title="Go to source code">Soluble/Schema/Source/Mysql/MysqlInformationSchema.php</a>
 		<br>
 	</div>
 
@@ -429,7 +429,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getRelations" id="_getRelations">
+	<tr data-order="getForeignKeys" id="_getForeignKeys">
 
 		<td class="attributes"><code>
 			 public 
@@ -440,15 +440,61 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getRelations">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#154-161" title="Go to source code">getRelations</a>( <span>string <var>$table</var></span> )</code>
+		<a class="anchor" href="#_getForeignKeys">#</a>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#154-161" title="Go to source code">getForeignKeys</a>( <span>string <var>$table</var></span> )</code>
 
 		<div class="description short">
-			<p>Retrieve foreign keys / relations information</p>
+			<p>Retrieve foreign keys information</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Retrieve foreign keys / relations information</p>
+			<p>Retrieve foreign keys information</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$table</var></dt>
+					<dd>table name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array<br>relations associative array ['col_name_1' => ['referenced_table' => 'tab1', 'referenced_column' => 'col1', 'constraint_name' => 'FK...']]
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-Soluble.Schema.Exception.InvalidArgumentException.html">Soluble\Schema\Exception\InvalidArgumentException</a></code><br>
+					<code><a href="class-Soluble.Schema.Exception.ErrorException.html">Soluble\Schema\Exception\ErrorException</a></code><br>
+					<code><a href="class-Soluble.Schema.Exception.ExceptionInterface.html">Soluble\Schema\Exception\ExceptionInterface</a></code><br>
+					<code><a href="class-Soluble.Schema.Exception.TableNotFoundException.html">Soluble\Schema\Exception\TableNotFoundException</a></code>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getReferences" id="_getReferences">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getReferences">#</a>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#163-170" title="Go to source code">getReferences</a>( <span>string <var>$table</var></span> )</code>
+
+		<div class="description short">
+			<p>Retrieve references (relation) to the given table</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Retrieve references (relation) to the given table</p>
 
 
 				<h4>Parameters</h4>
@@ -487,7 +533,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getTablesInformation">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#163-170" title="Go to source code">getTablesInformation</a>( )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#172-179" title="Go to source code">getTablesInformation</a>( )</code>
 
 		<div class="description short">
 			<p>Return full information of all tables present in schema</p>
@@ -527,7 +573,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getTableConfig">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#172-209" title="Go to source code">getTableConfig</a>( <span>string <var>$table</var></span>, <span>boolean|null <var>$include_options</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#181-218" title="Go to source code">getTableConfig</a>( <span>string <var>$table</var></span>, <span>boolean|null <var>$include_options</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Get a table configuration</p>
@@ -573,7 +619,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getSchemaConfig">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#212-240" title="Go to source code">getSchemaConfig</a>( <span>boolean|null <var>$include_options</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#221-249" title="Go to source code">getSchemaConfig</a>( <span>boolean|null <var>$include_options</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Get schema configuration</p>
@@ -617,7 +663,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getObjectConfig">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#242-487" title="Go to source code">getObjectConfig</a>( <span>string <var>$table</var> = <span class="php-keyword1">null</span></span>, <span>boolean|null <var>$include_options</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#251-496" title="Go to source code">getObjectConfig</a>( <span>string <var>$table</var> = <span class="php-keyword1">null</span></span>, <span>boolean|null <var>$include_options</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Return object (table/schema) configuration</p>
@@ -662,7 +708,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_disableInnoDbStats">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#489-513" title="Go to source code">disableInnoDbStats</a>( )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#498-522" title="Go to source code">disableInnoDbStats</a>( )</code>
 
 		<div class="description short">
 			<p>Disable innodbstats will increase speed of metadata lookups</p>
@@ -692,7 +738,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_restoreInnoDbStats">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#516-527" title="Go to source code">restoreInnoDbStats</a>( )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#525-536" title="Go to source code">restoreInnoDbStats</a>( )</code>
 
 		<div class="description short">
 			<p>Restore old innodbstats variable</p>
@@ -722,7 +768,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_loadCacheInformation">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#530-552" title="Go to source code">loadCacheInformation</a>( <span>string <var>$table</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#539-561" title="Go to source code">loadCacheInformation</a>( <span>string <var>$table</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -762,7 +808,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_clearCacheInformation">#</a>
-		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#554-568" title="Go to source code">clearCacheInformation</a>( )</code>
+		<code><a href="source-class-Soluble.Schema.Source.Mysql.MysqlInformationSchema.html#563-577" title="Go to source code">clearCacheInformation</a>( )</code>
 
 		<div class="description short">
 			<p>Clear local cache information for the current schema</p>
