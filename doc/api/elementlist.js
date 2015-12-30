@@ -1,3 +1,0 @@
-
-var ApiGen = ApiGen || {};
-ApiGen.elements = [["c","Soluble\\Schema\\Db\\Wrapper\\MysqlConnectionAdapter"],["c","Soluble\\Schema\\Exception\\ErrorException"],["c","Soluble\\Schema\\Exception\\ExceptionInterface"],["c","Soluble\\Schema\\Exception\\InvalidArgumentException"],["c","Soluble\\Schema\\Exception\\InvalidUsageException"],["c","Soluble\\Schema\\Exception\\MultiplePrimaryKeyException"],["c","Soluble\\Schema\\Exception\\NoPrimaryKeyException"],["c","Soluble\\Schema\\Exception\\SchemaNotFoundException"],["c","Soluble\\Schema\\Exception\\TableNotFoundException"],["c","Soluble\\Schema\\Exception\\UnsupportedDriverException"],["c","Soluble\\Schema\\Source\\AbstractSource"],["c","Soluble\\Schema\\Source\\Mysql\\MysqlInformationSchema"]];

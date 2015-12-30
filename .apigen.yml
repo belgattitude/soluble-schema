@@ -2,7 +2,7 @@ title: soluble-schema API
 source:
     - src
     
-destination: doc/api
+destination: build/api
 
 internal: false
 

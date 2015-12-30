@@ -1,0 +1,8 @@
+docs_dir: doc
+site_dir: build/doc
+pages:
+    - { 'Home': index.md }
+site_name: soluble-schema
+site_description: "soluble-schema"
+theme: readthedocs
+repo_url: 'https://github.com/belgattitude/soluble-schema'
