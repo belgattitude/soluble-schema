@@ -43,10 +43,7 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Soluble\Schema\Exception\SchemaNotFoundException');
         $metadata = new MysqlInformationSchema($this->conn, $schema = "fdgdfgdfgppooaze");
 
-        $method = new \ReflectionMethod('\Soluble\Schema\Source\Mysql\MysqlInformationSchema', 'getSchemaConfig');
-        $method->setAccessible(true);
-
-        $schema = $method->invoke($metadata);
+        $metadata->getSchemaConfig();
 
     }
 
@@ -69,13 +66,8 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSchemaConfig()
     {
-
-        $method = new \ReflectionMethod('\Soluble\Schema\Source\Mysql\MysqlInformationSchema', 'getSchemaConfig');
-        $method->setAccessible(true);
-
-        $schema = $method->invoke($this->metadata);
-
-        $this->assertInternalType('array', $schema);
+        $schema = $this->metadata->getSchemaConfig();
+        $this->assertInstanceOf('ArrayObject', $schema);
         $this->assertInternalType('array', $schema['tables']);
         $this->assertTrue(array_key_exists('product', $schema['tables']));
     }

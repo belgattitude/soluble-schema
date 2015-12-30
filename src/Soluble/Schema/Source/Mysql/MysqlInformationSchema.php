@@ -5,6 +5,7 @@ use Soluble\Schema\Exception;
 use Soluble\Schema\Source;
 use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
 use Zend\Config\Config;
+use ArrayObject;
 
 class MysqlInformationSchema extends Source\AbstractSource
 {
@@ -211,7 +212,7 @@ class MysqlInformationSchema extends Source\AbstractSource
             if (!array_key_exists($schema, self::$localCache)) {
                 self::$localCache[$schema] = array();
             }
-            self::$localCache[$schema] = array_merge_recursive(self::$localCache[$schema], $config);
+            self::$localCache[$schema] = array_merge_recursive(self::$localCache[$schema], (array) $config);
         }
 
         return $config['tables'][$table];
@@ -225,9 +226,9 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @throws Exception\SchemaNotFoundException
      *
      * @param boolean|null $include_options include extended information
-     * @return array
+     * @return ArrayObject
      */
-    protected function getSchemaConfig($include_options = null)
+    public function getSchemaConfig($include_options = null)
     {
         if ($include_options === null) {
             $include_options = $this->include_options;
@@ -255,7 +256,7 @@ class MysqlInformationSchema extends Source\AbstractSource
      *
      * @param string $table
      * @param boolean|null $include_options
-     * @return array
+     * @return ArrayObject
      */
     protected function getObjectConfig($table = null, $include_options = null)
     {
@@ -489,7 +490,7 @@ class MysqlInformationSchema extends Source\AbstractSource
             }
         }
 
-        $array = $config->toArray();
+        $array = new ArrayObject($config->toArray());
         unset($config);
         return $array;
 

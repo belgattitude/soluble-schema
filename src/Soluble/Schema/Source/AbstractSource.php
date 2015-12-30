@@ -203,6 +203,16 @@ abstract class AbstractSource
     abstract public function getReferences($table);
 
     /**
+     * Get full schema configuration
+     *
+     * @throws Exception\ErrorException
+     * @throws Exception\SchemaNotFoundException
+     *
+     * @return \ArrayObject
+     */
+    abstract public function getSchemaConfig();
+
+    /**
      * Return full information of all tables present in schema
      *
      * <code>
