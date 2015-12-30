@@ -1,9 +1,10 @@
 <?php
 
-namespace Soluble\Schema\Source\Mysql;
+namespace Soluble\Schema\Db\Wrapper;
 
 /**
- * Wrapper for basic mysqli/pdo usage
+ * Wrapper for basic operations on mysqli/pdo_mysql databases
+ * @author Vanvelthem Sébastien
  */
 
 use Soluble\Schema\Exception;

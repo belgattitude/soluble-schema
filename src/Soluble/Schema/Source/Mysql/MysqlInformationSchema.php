@@ -3,7 +3,7 @@ namespace Soluble\Schema\Source\Mysql;
 
 use Soluble\Schema\Exception;
 use Soluble\Schema\Source;
-use Soluble\Schema\Source\Mysql\MysqlConnectionWrapper;
+use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
 use Zend\Config\Config;
 
 class MysqlInformationSchema extends Source\AbstractSource

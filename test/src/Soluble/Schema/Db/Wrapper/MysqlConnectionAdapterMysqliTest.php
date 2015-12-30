@@ -1,6 +1,6 @@
 <?php
 
-namespace Soluble\Schema\Source\Mysql;
+namespace Soluble\Schema\Source\Db\Wrapper;
 
 use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
 
