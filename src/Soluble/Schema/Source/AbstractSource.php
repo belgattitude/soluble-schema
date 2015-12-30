@@ -81,7 +81,7 @@ abstract class AbstractSource
     /**
      * Retrieve full columns informations from a table
      *
-     * The returned is an array composed 
+     * The returned is an array looks like
      * <code>
      * [
      *  ["column_name_1"] => [
@@ -89,6 +89,9 @@ abstract class AbstractSource
      *   ["primary"]   => (boolean) "Whether column is (part of) a primary key",
      *   ["nullable"]  => (boolean) "Whether column is nullable",
      *   ["default"]   => (string)  "Default value for column or null if none",
+     * 
+     *   // Specific to primary key(s) columns
+     *   ["autoincrement"] => (boolean) "Whether the primary key is autoincremented"
      *
      *   // Specific to numeric, decimal, boolean... types
      *   ["unsigned"]  => (boolean) "Whether the column is unsigned",
@@ -99,8 +102,7 @@ abstract class AbstractSource
      *   ["octet_length"] => (int) "Maximum length in octets (differs from length when using multibyte charsets",
      *
      *   // Columns specific ddl information
-     *   ["options"]  => 'Column specific options'
-     *          [
+     *   ["options"]  => [
      *            "comment"          => "Column comment",
      *            "definition"       => "DDL definition, i.e. varchar(250)",
      *            "ordinal_position" => "Column position number",
@@ -145,6 +147,55 @@ abstract class AbstractSource
 
     /**
      * Return full information of all tables present in schema
+     * 
+     * The resulting array looks like
+     * <code>
+     * [
+     *  ["table_name_1"] => [
+     *    ["name"]    => (string) 'Table name'
+     *    ["columns"] => [ // Columns information, 
+     *                     // @see AbstractSource::getColumnsInformation()
+     *                     "col name_1" => ["name" => "", "type" => "", ...]',
+     *                     "col name_2" => ["name" => "", "type" => "", ...]'
+     *                   ]
+     *    ["primary_keys"] => [ // Primary key column(s) or empty
+     *                      "pk_col1", "pk_col2"
+     *                   ],
+     *    ["unique_keys"]  => [ // Uniques constraints or empty if none
+     *                      "unique_index_name_1" => ["col1", "col3"],
+     *                      "unique_index_name_2" => ["col4"]
+     *                   ],
+     *    ["foreign_keys"] => [ // Foreign keys columns and their references or empty if none
+     *                       "col_1" => [
+     *                                    "referenced_table"  => "Referenced table name",
+     *                                    "referenced_column" => "Referenced column name",
+     *                                    "constraint_name"   => "Constraint name i.e. 'FK_6A2CA10CBC21F742'"
+     *                                  ],
+     *                       "col_2" => [ // ...  
+     *                                  ]
+     *                      ],
+     *    ["references"] => [ // Relations referencing this table
+     *                       "referencing_table_name_1" => [
+     *                          "column"            => "Colum name in this table",
+     *                          "referenced_column" => "Column name in the referenceing table", 
+     *                          "constraint_name"   => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
+     *                          ],
+     *                        "referencing_table_2" => [ //...
+     *                          ],     
+     *                      ]
+     *    ["indexes"]  => [],
+     *    ['options']  => [ // Specific table creation options
+     *                      "comment"   => "Table comment",
+     *                      "collation" => "Table collation, i.e. 'utf8_general_ci'",
+     *                      "type"      => "Table type, i.e: 'BASE TABLE'",
+     *                      "engine"    => "Engine type if applicable, i.e. 'InnoDB'",
+     *                    ]
+     *  ],
+     *  ["table_name_2"] => [
+     *     //...
+     *  ]
+     * ]
+     * </code>
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
@@ -230,7 +281,7 @@ abstract class AbstractSource
      *
      * @param string $table
      * @return AbstractSource
-
+    */
     protected function validateTable($table)
     {
         $this->checkTableArgument($table);
@@ -239,7 +290,7 @@ abstract class AbstractSource
         }
         return $this;
     }
-    */
+    
 
     /**
      * Check whether a schema parameter is valid

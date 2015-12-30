@@ -91,45 +91,52 @@ $tables = $schema->getTables();
 // Retrieve full information of tables defined in schema
 $infos = $schema->getTablesInformation();
 
-/*
- Associative array with 
- [
-  ['table_name_1'] => [
-    ['name']         => 'Table name'
-    ['columns']      => 'Associative array with column names'
-                            [
-                              'col name_1' => ['name' => '', 'type' => '', ...]',
-                              'col name_2' => ['name' => '', 'type' => '', ...]',
-                            ]
-
-    ['primary_keys'] => 'Indexed array with primary column name(s)'
-    ['unique_keys']  => 'Associative array with each unique indexes'
-                            [
-                              'index name_1' => ['col1', 'col2']',
-                              'index_name_2' => ['col3']
-                            ]
-    ['foreign_keys'] => 'Associative array with foreign keys specifications'
-                            [
-                                'col_1' => ['column' => '', 'referenced_column' => '', 'referenced_table' => ''],
-                                'col_2' => ['column' => '', 'referenced_column' => '', 'referenced_table' => '']
-                            ]
-    ['references']   => 'Associative array with relations from other tables'
-                            [
-                                'ref_table_1' => ['column' => '', 'referenced_column' => '', 'constraint_name' => ''],
-                                'ref_table_2' => ['column' => '', 'referenced_column' => '', 'constraint_name' => ''],
-                            ]
-    ['indexes']      => 'Associative array'
-    ['options']      => 'Associative array with specific table creation options'
-                            [
-                                'comment'   => 'Table comment',
-                                'collation' => 'Table collation, i.e: utf8_general_ci',
-                                'type'      => 'Table type, i.e: BASE TABLE',
-                                'engine'    => 'InnoDB',
-                            ]
-  ],
-  ['table_name_2'] => [...]
+// The resulting array looks like
+[
+ ["table_name_1"] => [
+    ["name"]    => (string) 'Table name'
+    ["columns"] => [ // Columns information, 
+                     // @see AbstractSource::getColumnsInformation()
+                     "col name_1" => ["name" => "", "type" => "", ...]',
+                     "col name_2" => ["name" => "", "type" => "", ...]'
+                   ]
+    ["primary_keys"] => [ // Primary key column(s) or empty
+                      "pk_col1", "pk_col2"
+                   ],
+    ["unique_keys"]  => [ // Uniques constraints or empty if none
+                      "unique_index_name_1" => ["col1", "col3"],
+                      "unique_index_name_2" => ["col4"]
+                   ],
+    ["foreign_keys"] => [ // Foreign keys columns and their references or empty if none
+                       "col_1" => [
+                                    "referenced_table"  => "Referenced table name",
+                                    "referenced_column" => "Referenced column name",
+                                    "constraint_name"   => "Constraint name i.e. 'FK_6A2CA10CBC21F742'"
+                                  ],
+                       "col_2" => [ // ...  
+                                  ]
+                      ],
+    ["references"] => [ // Relations referencing this table
+                       "referencing_table_name_1" => [
+                          "column"            => "Colum name in this table",
+                          "referenced_column" => "Column name in the referenceing table", 
+                          "constraint_name"   => "Constaint name i.e. 'FK_6A2CA10CBC21F742'"
+                          ],
+                        "referencing_table_2" => [ //...
+                          ],     
+                      ]
+    ["indexes"]  => [],
+    ["options"]  => [ // Specific table creation options
+                      "comment"   => (string) "Table comment",
+                      "collation" => (string) "Table collation, i.e. 'utf8_general_ci'",
+                      "type"      => (string) "Table type, i.e: 'BASE TABLE'",
+                      "engine"    => (string) "Engine type if applicable, i.e. 'InnoDB'",
+                    ]
+ ],
+ ["table_name_2"] => [
+   //...
  ]
-*/
+]
      
 // Test if table exists in schema
 if ($schema->hasTable($table)) {
@@ -137,13 +144,14 @@ if ($schema->hasTable($table)) {
 }
 ```
 
-### Get column informations in a table
+### Get table columns information
 
 ```php
+<?php
 
 // Retrieve just column names from a table
 $columns = $schema->getColumns($table); 
-// -> ['col1', 'col2']
+// -> ['column_name_1', 'column_name_2']
 
 // Retrieve full columns information from a tabme
 $columns = $schema->getColumnsInformation($table); 
@@ -156,6 +164,9 @@ $columns = $schema->getColumnsInformation($table);
    ["nullable"]  => (boolean) "Whether column is nullable",
    ["default"]   => (string)  "Default value for column or null if none",
 
+   // Specific to primary key(s) columns
+   ["autoincrement"] => (boolean) "Whether the primary key is autoincremented"
+
    // Specific to numeric, decimal, boolean... types
    ["unsigned"]  => (boolean) "Whether the column is unsigned",
    ["precision"] => (int)     "Number precision (or maximum length)",
@@ -165,16 +176,15 @@ $columns = $schema->getColumnsInformation($table);
    ["octet_length"] => (int) "Maximum length in octets (differs from length when using multibyte charsets",
 
    // Columns specific ddl information
-   ["options"]  => 'Column specific options'
-          [
-            "comment"          => "Column comment",
-            "definition"       => "DDL definition, i.e. varchar(250)",
-            "ordinal_position" => "Column position number",
-            "constraint_type"  => "Type of constraint if applicable",
-            "column_key"       => "",
-            "charset"          => "Column charset, i.e. 'utf8'",
-            "collation"        => "Column collation, i.e. 'utf8_unicode_ci'"
-          ],
+   ["options"]  => [ // Column specific options
+        "comment"          => "Column comment",
+        "definition"       => "DDL definition, i.e. varchar(250)",
+        "ordinal_position" => "Column position number",
+        "constraint_type"  => "Type of constraint if applicable",
+        "column_key"       => "",
+        "charset"          => "Column charset, i.e. 'utf8'",
+        "collation"        => "Column collation, i.e. 'utf8_unicode_ci'"
+        ],
    ],
    ["column_name_2"] => [ 
        //... 
