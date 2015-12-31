@@ -182,15 +182,16 @@ class MysqlDriver51 extends AbstractMysqlDriver
         return $array;
 
     }
-    
+
     /**
      * Return information schema query
-     * 
+     *
      * @param string|null $table
      * @return string
      */
-    protected function getQuery($table = null) {
-        
+    protected function getQuery($table = null)
+    {
+
         $qSchema = $this->adapter->quoteValue($this->schema);
 
         if ($table !== null) {
@@ -263,13 +264,13 @@ class MysqlDriver51 extends AbstractMysqlDriver
             and (kcu.column_name = c.column_name or kcu.column_name is null)
             order by t.table_name, c.ordinal_position
         ";
-        
+
         return $query;
     }
-    
+
     /**
      * Execute information schema query
-     * 
+     *
      * @param string|null $table table name or null
      * @return ArrayObject
      * @throws Exception\ErrorException
