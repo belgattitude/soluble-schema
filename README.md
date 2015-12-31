@@ -294,10 +294,12 @@ Currently only MySQL and MariaDB are supported.
 
 | Database     | Driver             | Source class                                         |
 |--------------|--------------------|------------------------------------------------------|
-| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema` |
-| Mariadb 5.1+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema` |
+| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema`       |
+| Mariadb 5.5+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema`       |
 
-To implement new sources for information schema (oracle, postgres...), just extends the `Soluble\Schema\Source\AbstractSource` class and send a pull request.
+You can create new schema sources (oracle, postgresql...) by implementing the `Soluble\Schema\Source\SchemaSourceInterface`. 
+
+Please see the [contribution guide](./CONTRIBUTING.md) and send a pull request.
 
 ## Future enhancements
 

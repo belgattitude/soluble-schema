@@ -12,7 +12,7 @@ interface MysqlDriverInterface
      *
      * @param string $table
      * @param boolean $include_options
-     * @return ArrayObject
+     * @return \ArrayObject
      */
     public function getSchemaConfig($table = null, $include_options = true);    
 

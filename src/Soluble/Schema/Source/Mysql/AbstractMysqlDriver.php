@@ -4,7 +4,7 @@ namespace Soluble\Schema\Source\Mysql;
 
 use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
 
-abstract class AbstractMysqlDriver
+abstract class AbstractMysqlDriver implements MysqlDriverInterface
 {
     /**
      * @var MysqlConnectionAdapter
