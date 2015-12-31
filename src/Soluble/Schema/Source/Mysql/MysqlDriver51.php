@@ -5,6 +5,7 @@ namespace Soluble\Schema\Source\Mysql;
 use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
 use ArrayObject;
 use Zend\Config\Config;
+use Soluble\Schema\Exception;
 
 class MysqlDriver51 extends AbstractMysqlDriver
 {
@@ -30,98 +31,17 @@ class MysqlDriver51 extends AbstractMysqlDriver
 
     /**
      * {@inheritdoc}
+     * @throws Exception\ErrorException
      */
     public function getSchemaConfig($table = null, $include_options = true)
     {
         $schema = $this->schema;
-        $qSchema = $this->adapter->quoteValue($schema);
 
-        if ($table !== null) {
-            $qTable = $this->adapter->quoteValue($table);
-            $table_clause = "and (t.TABLE_NAME = $qTable or (kcu.referenced_table_name = $qTable and kcu.constraint_name = 'FOREIGN KEY'))";
-            $table_join_condition = "(t.table_name = kcu.table_name or  kcu.referenced_table_name = t.table_name)";
-        } else {
-            $table_join_condition = "t.table_name = kcu.table_name";
-            $table_clause = '';
-        }
-
-        $query = "
-
-            SELECT
-                    t.table_name,
-                    c.column_name,
-                    c.data_type,
-                    c.column_type,
-
-                    c.extra,
-
-                    tc.constraint_type,
-                    kcu.constraint_name,
-                    kcu.referenced_table_name,
-                    kcu.referenced_column_name,
-
-                    c.column_default,
-                    c.is_nullable,
-                    c.numeric_precision,
-                    c.numeric_scale,
-                    c.character_octet_length,
-                    c.character_maximum_length,
-                    c.ordinal_position,
-
-                    c.column_key, -- UNI/MUL/PRI
-                    c.character_set_name,
-
-
-                    c.collation_name,
-
-                    c.column_comment,
-
-                    t.table_type,
-                    t.engine,
-                    t.table_comment,
-                    t.table_collation
-
-            FROM `INFORMATION_SCHEMA`.`COLUMNS` c
-            INNER JOIN `INFORMATION_SCHEMA`.`TABLES` t on c.TABLE_NAME = t.TABLE_NAME
-            LEFT JOIN `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` kcu
-               on (
-                    $table_join_condition
-                     and kcu.table_schema = t.table_schema
-                     and kcu.column_name = c.column_name
-                 )
-              LEFT JOIN
-                `INFORMATION_SCHEMA`.`TABLE_CONSTRAINTS` tc
-               on (
-                     t.table_name = tc.table_name
-                      and tc.table_schema = t.table_schema
-                      and tc.constraint_name = kcu.constraint_name
-                  )
-
-
-            where c.TABLE_SCHEMA = $qSchema
-            and t.TABLE_SCHEMA = $qSchema
-            $table_clause
-            and (kcu.table_schema = $qSchema  or kcu.table_schema is null)
-
-            and (kcu.column_name = c.column_name or kcu.column_name is null)
-            order by t.table_name, c.ordinal_position
-        ";
-
-        $this->disableInnoDbStats();
-        try {
-            $results = $this->adapter->query($query);
-        } catch (\Exception $e) {
-            //@codeCoverageIgnoreStart
-            $this->restoreInnoDbStats();
-            throw new Exception\ErrorException(__METHOD__ . ": " . $e->getMessage());
-            //@codeCoverageIgnoreEnd
-        }
-        $this->restoreInnoDbStats();
+        $results = $this->executeQuery($table);
 
         $references = array();
         $config = new Config(array('tables' => array()), true);
         $tables = $config->offsetGet('tables');
-
 
         foreach ($results as $r) {
             // Setting table information
@@ -263,5 +183,112 @@ class MysqlDriver51 extends AbstractMysqlDriver
         unset($config);
         return $array;
 
+    }
+    
+    /**
+     * Return information schema query
+     * 
+     * @param string|null $table
+     * @return string
+     */
+    protected function getQuery($table = null) {
+        
+        $qSchema = $this->adapter->quoteValue($this->schema);
+
+        if ($table !== null) {
+            $qTable = $this->adapter->quoteValue($table);
+            $table_clause = "and (t.TABLE_NAME = $qTable or (kcu.referenced_table_name = $qTable and kcu.constraint_name = 'FOREIGN KEY'))";
+            $table_join_condition = "(t.table_name = kcu.table_name or  kcu.referenced_table_name = t.table_name)";
+        } else {
+            $table_join_condition = "t.table_name = kcu.table_name";
+            $table_clause = '';
+        }
+
+        $query = "
+
+            SELECT
+                    t.table_name,
+                    c.column_name,
+                    c.data_type,
+                    c.column_type,
+
+                    c.extra,
+
+                    tc.constraint_type,
+                    kcu.constraint_name,
+                    kcu.referenced_table_name,
+                    kcu.referenced_column_name,
+
+                    c.column_default,
+                    c.is_nullable,
+                    c.numeric_precision,
+                    c.numeric_scale,
+                    c.character_octet_length,
+                    c.character_maximum_length,
+                    c.ordinal_position,
+
+                    c.column_key, -- UNI/MUL/PRI
+                    c.character_set_name,
+
+
+                    c.collation_name,
+
+                    c.column_comment,
+
+                    t.table_type,
+                    t.engine,
+                    t.table_comment,
+                    t.table_collation
+
+            FROM `INFORMATION_SCHEMA`.`COLUMNS` c
+            INNER JOIN `INFORMATION_SCHEMA`.`TABLES` t on c.TABLE_NAME = t.TABLE_NAME
+            LEFT JOIN `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` kcu
+               on (
+                    $table_join_condition
+                     and kcu.table_schema = t.table_schema
+                     and kcu.column_name = c.column_name
+                 )
+              LEFT JOIN
+                `INFORMATION_SCHEMA`.`TABLE_CONSTRAINTS` tc
+               on (
+                     t.table_name = tc.table_name
+                      and tc.table_schema = t.table_schema
+                      and tc.constraint_name = kcu.constraint_name
+                  )
+
+
+            where c.TABLE_SCHEMA = $qSchema
+            and t.TABLE_SCHEMA = $qSchema
+            $table_clause
+            and (kcu.table_schema = $qSchema  or kcu.table_schema is null)
+
+            and (kcu.column_name = c.column_name or kcu.column_name is null)
+            order by t.table_name, c.ordinal_position
+        ";
+        
+        return $query;
+    }
+    
+    /**
+     * Execute information schema query
+     * 
+     * @param string|null $table table name or null
+     * @return ArrayObject
+     * @throws Exception\ErrorException
+     */
+    protected function executeQuery($table = null)
+    {
+        $query = $this->getQuery($table);
+        $this->disableInnoDbStats();
+        try {
+            $results = $this->adapter->query($query);
+        } catch (\Exception $e) {
+            //@codeCoverageIgnoreStart
+            $this->restoreInnoDbStats();
+            throw new Exception\ErrorException(__METHOD__ . ": " . $e->getMessage());
+            //@codeCoverageIgnoreEnd
+        }
+        $this->restoreInnoDbStats();
+        return $results;
     }
 }

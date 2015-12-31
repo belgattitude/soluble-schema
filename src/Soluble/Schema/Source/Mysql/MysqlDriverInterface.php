@@ -2,6 +2,8 @@
 
 namespace Soluble\Schema\Source\Mysql;
 
+use Soluble\Schema\Exception;
+
 interface MysqlDriverInterface
 {
 
