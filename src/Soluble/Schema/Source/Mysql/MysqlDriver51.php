@@ -1,252 +1,33 @@
 <?php
+
 namespace Soluble\Schema\Source\Mysql;
 
-use Soluble\Schema\Exception;
-use Soluble\Schema\Source;
 use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
-use Zend\Config\Config;
 use ArrayObject;
+use Zend\Config\Config;
 
-class MysqlInformationSchema extends Source\AbstractSource
+class MysqlDriver51 extends AbstractMysqlDriver
 {
-    /**
-     * Schema name
-     *
-     * @var string
-     */
-    protected $schema;
 
     /**
      * @var MysqlConnectionAdapter
      */
     protected $adapter;
 
-
-
     /**
-     * Used to restore innodb stats mysql global variable
+     * Schema name
      * @var string
      */
-    protected $mysql_innodbstats_value;
-
-    /**
-     * Whether to include full schema options like comment, collations...
-     * @var boolean
-     */
-    protected $include_options = true;
+    protected $schema;
 
     /**
      *
-     * @var array
+     * @param MysqlConnectionAdapter $adapter
+     * @param string $schema Schema name
      */
-    protected static $localCache = array();
-
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $useLocalCaching = true;
-
-    /**
-     *
-     * @var array
-     */
-    protected static $fullyCachedSchemas = array();
-
-
-    /**
-     * Constructor
-     *
-     * @param \PDO|\mysqli $connection
-     * @param string $schema default schema, taken from adapter if not given
-     * @throws Exception\InvalidArgumentException for invalid connection
-     * @throws Exception\InvalidUsageException thrown if no schema can be found.
-     */
-    public function __construct($connection, $schema = null)
+    public function __construct(MysqlConnectionAdapter $adapter, $schema)
     {
-        try {
-            $this->adapter = new MysqlConnectionAdapter($connection);
-        } catch (Exception\InvalidArgumentException $e) {
-            $msg = "MysqlInformationSchema requires a valid 'mysqli' or 'pdo:mysql' connection object ({$e->getMessage()}).";
-            throw new Exception\InvalidArgumentException($msg);
-        }
-
-        if ($schema === null) {
-            $schema = $this->adapter->getCurrentSchema();
-            if ($schema === false || $schema == '') {
-                $msg = "Database name (schema) parameter missing and no default schema set on connection";
-                throw new Exception\InvalidUsageException($msg);
-            }
-        }
-
-        $this->setDefaultSchema($schema);
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUniqueKeys($table, $include_primary = false)
-    {
-        $this->loadCacheInformation($table);
-        $uniques = (array) self::$localCache[$this->schema]['tables'][$table]['unique_keys'];
-        if ($include_primary) {
-            try {
-                $pks = $this->getPrimaryKeys($table);
-                if (count($pks) > 0) {
-                    $uniques = array_merge($uniques, array('PRIMARY' => $pks));
-                }
-            } catch (Exception\NoPrimaryKeyException $e) {
-                // Ignore exception
-            }
-        }
-        return $uniques;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getIndexesInformation($table)
-    {
-        $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['indexes'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPrimaryKey($table)
-    {
-        $pks = $this->getPrimaryKeys($table);
-        if (count($pks) > 1) {
-            $keys = join(',', $pks);
-            throw new Exception\MultiplePrimaryKeyException(__METHOD__ . ". Multiple primary keys found on table '{$this->schema}'.'$table':  $keys");
-        }
-        return $pks[0];
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPrimaryKeys($table)
-    {
-        $this->loadCacheInformation($table);
-        $pks = self::$localCache[$this->schema]['tables'][$table]['primary_keys'];
-        if (count($pks) == 0) {
-            throw new Exception\NoPrimaryKeyException(__METHOD__ . ". No primary keys found on table  '{$this->schema}'.'$table'.");
-        }
-        return $pks;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getColumnsInformation($table)
-    {
-        $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['columns'];
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getForeignKeys($table)
-    {
-        $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['foreign_keys'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getReferences($table)
-    {
-        $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['references'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTablesInformation()
-    {
-        $this->loadCacheInformation(null);
-        return self::$localCache[$this->schema]['tables'];
-    }
-
-    /**
-     * Get a table configuration
-     *
-     * @throws Exception\ErrorException
-     * @throws Exception\TableNotFoundException
-     *
-     * @param string $table table name
-     * @param boolean|null $include_options include extended information
-     * @return array
-     */
-    protected function getTableConfig($table, $include_options = null)
-    {
-        if ($include_options === null) {
-            $include_options = $this->include_options;
-        }
-
-        $schema = $this->schema;
-
-        if ($this->useLocalCaching &&
-                isset(self::$localCache[$schema]['tables'][$table])) {
-            return self::$localCache[$schema]['tables'][$table];
-        }
-
-        $config = $this->getObjectConfig($table, $include_options);
-
-        if (!array_key_exists($table, $config['tables'])) {
-            throw new Exception\TableNotFoundException(__METHOD__ . ". Table '$table' in database schema '{$schema}' not found.");
-        }
-
-        if ($this->useLocalCaching) {
-            if (!array_key_exists($schema, self::$localCache)) {
-                self::$localCache[$schema] = array();
-            }
-            self::$localCache[$schema] = array_merge_recursive(self::$localCache[$schema], (array) $config);
-        }
-
-        return $config['tables'][$table];
-    }
-
-
-    /**
-     * Get schema configuration
-     *
-     * @throws Exception\ErrorException
-     * @throws Exception\SchemaNotFoundException
-     *
-     * @param boolean|null $include_options include extended information
-     * @return ArrayObject
-     */
-    public function getSchemaConfig($include_options = null)
-    {
-        if ($include_options === null) {
-            $include_options = $this->include_options;
-        }
-        $schema = $this->schema;
-        if ($this->useLocalCaching && in_array($schema, self::$fullyCachedSchemas)) {
-            return self::$localCache[$schema];
-        }
-
-        $config = $this->getObjectConfig($table = null, $include_options);
-        if (count($config['tables']) == 0) {
-            throw new Exception\SchemaNotFoundException(__METHOD__ . " Error: schema '{$schema}' not found or without any table or view");
-        }
-        if ($this->useLocalCaching) {
-            self::$localCache[$schema] = $config;
-            self::$fullyCachedSchemas[] = $schema;
-        }
-        return $config;
+        parent::__construct($adapter, $schema);
     }
 
     /**
@@ -258,7 +39,7 @@ class MysqlInformationSchema extends Source\AbstractSource
      * @param boolean|null $include_options
      * @return ArrayObject
      */
-    protected function getObjectConfig($table = null, $include_options = null)
+    public function getSchemaConfig($table = null, $include_options = null)
     {
         if ($include_options === null) {
             $include_options = $this->include_options;
@@ -494,86 +275,5 @@ class MysqlInformationSchema extends Source\AbstractSource
         unset($config);
         return $array;
 
-    }
-
-    /**
-     * Disable innodbstats will increase speed of metadata lookups
-     *
-     * @return void
-     */
-    protected function disableInnoDbStats()
-    {
-        $sql = "show global variables like 'innodb_stats_on_metadata'";
-        try {
-            $results = $this->adapter->query($sql);
-            if (count($results) > 0) {
-                $row = $results->offsetGet(0);
-
-                $value = strtoupper($row['Value']);
-                // if 'on' no need to do anything
-                if ($value != 'OFF') {
-                    $this->mysql_innodbstats_value = $value;
-                    // disabling innodb_stats
-                    $this->adapter->execute("set global innodb_stats_on_metadata='OFF'");
-                }
-            }
-        } catch (\Exception $e) {
-            // do nothing, silently fallback
-        }
-    }
-
-
-    /**
-     * Restore old innodbstats variable
-     * @return void
-     */
-    protected function restoreInnoDbStats()
-    {
-        $value = $this->mysql_innodbstats_value;
-        if ($value !== null) {
-            // restoring old variable
-            $this->adapter->execute("set global innodb_stats_on_metadata='$value'");
-        }
-    }
-
-
-    /**
-     *
-     * @param string $table
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\TableNotFoundException
-     *
-     */
-    protected function loadCacheInformation($table = null)
-    {
-        $schema = $this->schema;
-        $this->checkTableArgument($table);
-
-        if (!in_array($schema, self::$fullyCachedSchemas)) {
-            if ($table !== null) {
-                $this->getTableConfig($table);
-            } else {
-                $this->getSchemaConfig();
-            }
-        } elseif ($table !== null) {
-            // Just in case to check if table exists
-            $this->getTableConfig($table);
-        }
-    }
-
-    /**
-     * Clear local cache information for the current schema
-     *
-     * @throws Exception\InvalidArgumentException
-     */
-    public function clearCacheInformation()
-    {
-        $schema = $this->schema;
-        if (array_key_exists($schema, self::$localCache)) {
-            unset(self::$localCache[$schema]);
-            if (($key = array_search($schema, self::$fullyCachedSchemas)) !== false) {
-                unset(self::$fullyCachedSchemas[$key]);
-            }
-        }
     }
 }

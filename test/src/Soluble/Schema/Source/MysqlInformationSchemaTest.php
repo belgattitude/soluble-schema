@@ -1,6 +1,6 @@
 <?php
 
-namespace Soluble\Schema\Source\Mysql;
+namespace Soluble\Schema\Source;
 
 use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
 
@@ -74,7 +74,7 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTableConfigThrowsTableNotFoundException()
     {
-        $method = new \ReflectionMethod('\Soluble\Schema\Source\Mysql\MysqlInformationSchema', 'getTableConfig');
+        $method = new \ReflectionMethod('\Soluble\Schema\Source\MysqlInformationSchema', 'getTableConfig');
         $method->setAccessible(true);
 
         $this->setExpectedException('Soluble\Schema\Exception\TableNotFoundException');
@@ -86,7 +86,7 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
     {
         $table = "product_brand";
 
-        $method = new \ReflectionMethod('\Soluble\Schema\Source\Mysql\MysqlInformationSchema', 'getTableConfig');
+        $method = new \ReflectionMethod('\Soluble\Schema\Source\MysqlInformationSchema', 'getTableConfig');
         $method->setAccessible(true);
         $config = $method->invokeArgs($this->metadata, array($table));
 

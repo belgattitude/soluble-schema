@@ -43,7 +43,7 @@ require 'vendor/autoload.php';
 
 ### Connection
 
-Initialize the `Schema\Source\Mysql\MysqlInformationSchema` with a valid `PDO` or `mysqli` connection.
+Initialize the `Schema\Source\MysqlInformationSchema` with a valid `PDO` or `mysqli` connection.
 
 ```php
 <?php
@@ -58,17 +58,17 @@ $conn = new \PDO("mysql:host=$hostname", $username, $password, [
 // $conn = new \mysqli($hostname,$username,$password,$database);
 // $conn->set_charset($charset);
 
-$schema = new Schema\Source\Mysql\MysqlInformationSchema($conn);
+$schema = new Schema\Source\MysqlInformationSchema($conn);
 
 // By default the schema (database) is taken from current connection. 
 // If you wnat to query a different schema, set it in the second parameter.
-$otherDbSchema = new Schema\Source\Mysql\MysqlInformationSchema($conn, 'otherDbSchema');
+$otherDbSchema = new Schema\Source\MysqlInformationSchema($conn, 'otherDbSchema');
 ```
 
 
 ### API methods
 
-Once a `Schema\Source\AbstractSource` is intitalized, you have access to the following methods
+Once a `Schema\Source\SchemaSourceInterface` is intitalized, you have access to the following methods
 
 | Methods                         | Return        | Description                                 |
 |---------------------------------|---------------|---------------------------------------------|
@@ -294,8 +294,8 @@ Currently only MySQL and MariaDB are supported.
 
 | Database     | Driver             | Source class                                         |
 |--------------|--------------------|------------------------------------------------------|
-| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
-| Mariadb 5.1+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\Mysql\MysqlInformationSchema` |
+| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema` |
+| Mariadb 5.1+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema` |
 
 To implement new sources for information schema (oracle, postgres...), just extends the `Soluble\Schema\Source\AbstractSource` class and send a pull request.
 
