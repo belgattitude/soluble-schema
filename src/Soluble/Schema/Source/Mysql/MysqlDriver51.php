@@ -35,8 +35,6 @@ class MysqlDriver51 extends AbstractMysqlDriver
      */
     public function getSchemaConfig($table = null, $include_options = true)
     {
-        $schema = $this->schema;
-
         $results = $this->executeQuery($table);
 
         $references = array();
