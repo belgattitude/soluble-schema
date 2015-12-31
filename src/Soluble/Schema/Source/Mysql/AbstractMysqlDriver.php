@@ -16,14 +16,14 @@ abstract class AbstractMysqlDriver implements MysqlDriverInterface
      * @var string
      */
     protected $schema;
-    
+
     /**
      * Used to restore innodb stats mysql global variable
      * @var string
      */
     protected $mysql_innodbstats_value;
-    
-    
+
+
     /**
      *
      * @param MysqlConnectionAdapter $adapter
