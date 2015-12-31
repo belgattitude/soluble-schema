@@ -27,7 +27,7 @@ abstract class AbstractMysqlDriver
     /**
      *
      * @param MysqlConnectionAdapter $adapter
-     * @param strinb $schema database name
+     * @param string $schema database name
      */
     public function __construct(MysqlConnectionAdapter $adapter, $schema)
     {

@@ -187,7 +187,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
      *
      * @param string $table table name
      * @param boolean|null $include_options include extended information
-     * @return array
+     * @return ArrayObject
      */
     protected function getTableConfig($table, $include_options = null)
     {
@@ -212,7 +212,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
             if (!array_key_exists($schema, self::$localCache)) {
                 self::$localCache[$schema] = array();
             }
-            self::$localCache[$schema] = array_merge_recursive(self::$localCache[$schema], (array) $config);
+            self::$localCache[$schema] = new ArrayObject(array_merge_recursive((array) self::$localCache[$schema], (array) $config));
         }
 
         return $config['tables'][$table];

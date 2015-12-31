@@ -21,9 +21,7 @@ class MysqlDriver51 extends AbstractMysqlDriver
     protected $schema;
 
     /**
-     *
-     * @param MysqlConnectionAdapter $adapter
-     * @param string $schema Schema name
+     * {@inheritdoc}
      */
     public function __construct(MysqlConnectionAdapter $adapter, $schema)
     {
