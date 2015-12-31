@@ -6,11 +6,28 @@ use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
 
 abstract class AbstractMysqlDriver
 {
+    /**
+     * @var MysqlConnectionAdapter
+     */
+    protected $adapter;
 
+    /**
+     * Schema name
+     * @var string
+     */
+    protected $schema;
+    
+    /**
+     * Used to restore innodb stats mysql global variable
+     * @var string
+     */
+    protected $mysql_innodbstats_value;
+    
+    
     /**
      *
      * @param MysqlConnectionAdapter $adapter
-     * @param strinbg $schema database name
+     * @param strinb $schema database name
      */
     public function __construct(MysqlConnectionAdapter $adapter, $schema)
     {

@@ -31,20 +31,10 @@ class MysqlDriver51 extends AbstractMysqlDriver
     }
 
     /**
-     * Return object (table/schema) configuration
-     *
-     * @throws Exception\ErrorException
-     *
-     * @param string $table
-     * @param boolean|null $include_options
-     * @return ArrayObject
+     * {@inheritdoc}
      */
-    public function getSchemaConfig($table = null, $include_options = null)
+    public function getSchemaConfig($table = null, $include_options = true)
     {
-        if ($include_options === null) {
-            $include_options = $this->include_options;
-        }
-
         $schema = $this->schema;
         $qSchema = $this->adapter->quoteValue($schema);
 

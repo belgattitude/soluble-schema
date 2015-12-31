@@ -21,13 +21,6 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     protected $adapter;
 
 
-
-    /**
-     * Used to restore innodb stats mysql global variable
-     * @var string
-     */
-    protected $mysql_innodbstats_value;
-
     /**
      * Whether to include full schema options like comment, collations...
      * @var boolean
@@ -64,7 +57,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
      * Constructor
      *
      * @param \PDO|\mysqli $connection
-     * @param string $schema default schema, taken from adapter if not given
+     * @param string|null $schema default schema, taken from adapter if not given
      * @throws Exception\InvalidArgumentException for invalid connection
      * @throws Exception\InvalidUsageException thrown if no schema can be found.
      */
@@ -255,9 +248,6 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
         }
         return $config;
     }
-
-
-
 
     /**
      *
