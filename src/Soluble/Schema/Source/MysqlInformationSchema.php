@@ -3,7 +3,7 @@ namespace Soluble\Schema\Source;
 
 use Soluble\Schema\Exception;
 use Soluble\Schema\Source;
-use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
+use Soluble\DbWrapper\Adapter\MysqlAdapter;
 use ArrayObject;
 
 class MysqlInformationSchema extends Source\AbstractSchemaSource
@@ -16,7 +16,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     protected $schema;
 
     /**
-     * @var MysqlConnectionAdapter
+     * @var MysqlAdapter
      */
     protected $adapter;
 
@@ -64,7 +64,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function __construct($connection, $schema = null)
     {
         try {
-            $this->adapter = new MysqlConnectionAdapter($connection);
+            $this->adapter = new MysqlAdapter($connection);
         } catch (Exception\InvalidArgumentException $e) {
             $msg = "MysqlInformationSchema requires a valid 'mysqli' or 'pdo:mysql' connection object ({$e->getMessage()}).";
             throw new Exception\InvalidArgumentException($msg);

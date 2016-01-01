@@ -2,13 +2,13 @@
 
 namespace Soluble\Schema\Source\Mysql;
 
-use Soluble\Schema\Db\Wrapper\MysqlConnectionAdapter;
+use Soluble\DbWrapper\Adapter\MysqlAdapter;
 use Soluble\Schema\Exception;
 
 abstract class AbstractMysqlDriver implements MysqlDriverInterface
 {
     /**
-     * @var MysqlConnectionAdapter
+     * @var MysqlAdapter
      */
     protected $adapter;
 
@@ -27,10 +27,10 @@ abstract class AbstractMysqlDriver implements MysqlDriverInterface
 
     /**
      *
-     * @param MysqlConnectionAdapter $adapter
+     * @param MysqlAdapter $adapter
      * @param string $schema database name
      */
-    public function __construct(MysqlConnectionAdapter $adapter, $schema)
+    public function __construct(MysqlAdapter $adapter, $schema)
     {
         $this->adapter = $adapter;
         $this->schema = $schema;
