@@ -2,7 +2,7 @@
 
 namespace Soluble\Schema\Source\Mysql;
 
-use Soluble\DbWrapper\Adapter\MysqlAdapter;
+use Soluble\DbWrapper\Adapter\AdapterInterface;
 use ArrayObject;
 use Zend\Config\Config;
 use Soluble\Schema\Exception;
@@ -11,7 +11,7 @@ class MysqlDriver51 extends AbstractMysqlDriver
 {
 
     /**
-     * @var MysqlAdapter
+     * @var AdapterInterface
      */
     protected $adapter;
 
@@ -24,7 +24,7 @@ class MysqlDriver51 extends AbstractMysqlDriver
     /**
      * {@inheritdoc}
      */
-    public function __construct(MysqlAdapter $adapter, $schema)
+    public function __construct(AdapterInterface $adapter, $schema)
     {
         parent::__construct($adapter, $schema);
     }

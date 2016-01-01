@@ -3,7 +3,8 @@ namespace Soluble\Schema\Source;
 
 use Soluble\Schema\Exception;
 use Soluble\Schema\Source;
-use Soluble\DbWrapper\Adapter\MysqlAdapter;
+use Soluble\DbWrapper\Adapter\AdapterInterface;
+use Soluble\DbWrapper\AdapterFactory;
 use ArrayObject;
 
 class MysqlInformationSchema extends Source\AbstractSchemaSource
@@ -16,7 +17,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     protected $schema;
 
     /**
-     * @var MysqlAdapter
+     * @var AdapterInterface
      */
     protected $adapter;
 
@@ -56,18 +57,22 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     /**
      * Constructor
      *
-     * @param \PDO|\mysqli $connection
+     * @param \PDO|\mysqli|AdapterInterface $connection
      * @param string|null $schema default schema, taken from adapter if not given
      * @throws Exception\InvalidArgumentException for invalid connection
      * @throws Exception\InvalidUsageException thrown if no schema can be found.
      */
     public function __construct($connection, $schema = null)
     {
-        try {
-            $this->adapter = new MysqlAdapter($connection);
-        } catch (Exception\InvalidArgumentException $e) {
-            $msg = "MysqlInformationSchema requires a valid 'mysqli' or 'pdo:mysql' connection object ({$e->getMessage()}).";
-            throw new Exception\InvalidArgumentException($msg);
+        if ($connection instanceof AdapterInterface) {
+            $this->adapter = $connection;
+        } else {
+            try {
+                $this->adapter = AdapterFactory::createAdapterFromConnection($connection);
+            } catch (Exception\InvalidArgumentException $e) {
+                $msg = "MysqlInformationSchema requires a valid 'mysqli' or 'pdo:mysql' connection object ({$e->getMessage()}).";
+                throw new Exception\InvalidArgumentException($msg);
+            }
         }
 
         if ($schema === null) {
