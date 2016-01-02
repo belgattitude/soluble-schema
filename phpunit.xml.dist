@@ -24,7 +24,7 @@
 
     <testsuites>
         <testsuite name="soluble/schema">
-            <directory>./test/src/Soluble/Schema</directory>
+            <directory>./test/src/SolubleTest/Schema</directory>
         </testsuite>
     </testsuites>
     

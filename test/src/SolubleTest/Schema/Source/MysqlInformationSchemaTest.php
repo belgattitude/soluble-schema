@@ -1,7 +1,8 @@
 <?php
 
-namespace Soluble\Schema\Source;
+namespace SolubleTest\Schema\Source;
 
+use Soluble\Schema\Source\MysqlInformationSchema;
 use Soluble\DbWrapper\Adapter\AdapterInterface;
 use Soluble\DbWrapper\AdapterFactory;
 
