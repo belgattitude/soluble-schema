@@ -24,6 +24,11 @@ Retrieve information form your database information schema.
 - PHP engine 5.4+, 7.0+ or HHVM >= 3.2.
 - Currently supported database platforms (Mysql, MariaDb)
 
+## Documentation
+
+ - [Manual](http://docs.soluble.io/soluble-schema/manual/) in progress and [API documentation](http://docs.soluble.io/soluble-schema/api/) available.
+
+
 ## Installation
 
 Instant installation via [composer](http://getcomposer.org/).
