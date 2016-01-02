@@ -12,19 +12,19 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
      */
     protected $schema;
 
-    
+
     /**
      * Schema signature
      * @var string
      */
     protected $schemaSignature;
 
-    
+
     /**
      * @var AdapterInterface
      */
-    protected $adapter;    
-    
+    protected $adapter;
+
     /**
      * Constructor
      *
@@ -46,7 +46,7 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
         $this->setDefaultSchema($schema);
         $this->setSchemaSignature();
     }
-    
+
 
     /**
      * {@inheritdoc}
@@ -148,10 +148,10 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
             }
         }
     }
-    
+
     /**
      * Return current schema signature for caching
-     * 
+     *
      * @return void
      */
     protected function setSchemaSignature()

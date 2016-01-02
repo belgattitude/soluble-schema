@@ -68,7 +68,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
                 throw new Exception\InvalidArgumentException($msg);
             }
         }
-        
+
         parent::__construct($adapter, $schema);
 
         $this->driver = new Mysql\MysqlDriver51($this->adapter, $this->schema);
