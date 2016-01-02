@@ -55,7 +55,7 @@ abstract class AbstractMysqlDriver implements MysqlDriverInterface
                 if ($value != 'OFF') {
                     $this->mysql_innodbstats_value = $value;
                     // disabling innodb_stats
-                    $this->adapter->execute("set global innodb_stats_on_metadata='OFF'");
+                    $this->adapter->query("set global innodb_stats_on_metadata='OFF'");
                 }
             }
         } catch (\Exception $e) {
@@ -73,7 +73,7 @@ abstract class AbstractMysqlDriver implements MysqlDriverInterface
         $value = $this->mysql_innodbstats_value;
         if ($value !== null) {
             // restoring old variable
-            $this->adapter->execute("set global innodb_stats_on_metadata='$value'");
+            $this->adapter->query("set global innodb_stats_on_metadata='$value'");
         }
     }
 }

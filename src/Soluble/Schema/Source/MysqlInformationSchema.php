@@ -16,10 +16,6 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
      */
     protected $schema;
 
-    /**
-     * @var AdapterInterface
-     */
-    protected $adapter;
 
 
     /**
@@ -57,35 +53,25 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     /**
      * Constructor
      *
-     * @param \PDO|\mysqli|AdapterInterface $connection
+     * @param \PDO|\mysqli|AdapterInterface $adapter
      * @param string|null $schema default schema, taken from adapter if not given
      * @throws Exception\InvalidArgumentException for invalid connection
      * @throws Exception\InvalidUsageException thrown if no schema can be found.
      */
-    public function __construct($connection, $schema = null)
+    public function __construct($adapter, $schema = null)
     {
-        if ($connection instanceof AdapterInterface) {
-            $this->adapter = $connection;
-        } else {
+        if (!$adapter instanceof AdapterInterface) {
             try {
-                $this->adapter = AdapterFactory::createAdapterFromConnection($connection);
+                $adapter = AdapterFactory::createAdapterFromResource($adapter);
             } catch (Exception\InvalidArgumentException $e) {
-                $msg = "MysqlInformationSchema requires a valid 'mysqli' or 'pdo:mysql' connection object ({$e->getMessage()}).";
+                $msg = "MysqlInformationSchema requires a valid 'mysqli', 'pdo:mysql' or AdapterInterface parameter ({$e->getMessage()}).";
                 throw new Exception\InvalidArgumentException($msg);
             }
         }
+        
+        parent::__construct($adapter, $schema);
 
-        if ($schema === null) {
-            $schema = $this->adapter->getCurrentSchema();
-            if ($schema === false || $schema == '') {
-                $msg = "Database name (schema) parameter missing and no default schema set on connection";
-                throw new Exception\InvalidUsageException($msg);
-            }
-        }
-
-        $this->driver = new Mysql\MysqlDriver51($this->adapter, $schema);
-
-        $this->setDefaultSchema($schema);
+        $this->driver = new Mysql\MysqlDriver51($this->adapter, $this->schema);
     }
 
 
@@ -95,7 +81,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getUniqueKeys($table, $include_primary = false)
     {
         $this->loadCacheInformation($table);
-        $uniques = (array) self::$localCache[$this->schema]['tables'][$table]['unique_keys'];
+        $uniques = (array) self::$localCache[$this->schemaSignature]['tables'][$table]['unique_keys'];
         if ($include_primary) {
             try {
                 $pks = $this->getPrimaryKeys($table);
@@ -116,7 +102,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getIndexesInformation($table)
     {
         $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['indexes'];
+        return self::$localCache[$this->schemaSignature]['tables'][$table]['indexes'];
     }
 
     /**
@@ -127,7 +113,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
         $pks = $this->getPrimaryKeys($table);
         if (count($pks) > 1) {
             $keys = join(',', $pks);
-            throw new Exception\MultiplePrimaryKeyException(__METHOD__ . ". Multiple primary keys found on table '{$this->schema}'.'$table':  $keys");
+            throw new Exception\MultiplePrimaryKeyException(__METHOD__ . ". Multiple primary keys found on table '{$this->schemaSignature}'.'$table':  $keys");
         }
         return $pks[0];
     }
@@ -139,9 +125,9 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getPrimaryKeys($table)
     {
         $this->loadCacheInformation($table);
-        $pks = self::$localCache[$this->schema]['tables'][$table]['primary_keys'];
+        $pks = self::$localCache[$this->schemaSignature]['tables'][$table]['primary_keys'];
         if (count($pks) == 0) {
-            throw new Exception\NoPrimaryKeyException(__METHOD__ . ". No primary keys found on table  '{$this->schema}'.'$table'.");
+            throw new Exception\NoPrimaryKeyException(__METHOD__ . ". No primary keys found on table  '{$this->schemaSignature}'.'$table'.");
         }
         return $pks;
     }
@@ -153,7 +139,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getColumnsInformation($table)
     {
         $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['columns'];
+        return self::$localCache[$this->schemaSignature]['tables'][$table]['columns'];
     }
 
 
@@ -163,7 +149,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getForeignKeys($table)
     {
         $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['foreign_keys'];
+        return self::$localCache[$this->schemaSignature]['tables'][$table]['foreign_keys'];
     }
 
     /**
@@ -172,7 +158,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getReferences($table)
     {
         $this->loadCacheInformation($table);
-        return self::$localCache[$this->schema]['tables'][$table]['references'];
+        return self::$localCache[$this->schemaSignature]['tables'][$table]['references'];
     }
 
     /**
@@ -181,7 +167,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getTablesInformation()
     {
         $this->loadCacheInformation(null);
-        return self::$localCache[$this->schema]['tables'];
+        return self::$localCache[$this->schemaSignature]['tables'];
     }
 
     /**
@@ -200,7 +186,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
             $include_options = $this->include_options;
         }
 
-        $schema = $this->schema;
+        $schema = $this->schemaSignature;
 
         if ($this->useLocalCaching &&
                 isset(self::$localCache[$schema]['tables'][$table])) {
@@ -238,7 +224,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
         if ($include_options === null) {
             $include_options = $this->include_options;
         }
-        $schema = $this->schema;
+        $schema = $this->schemaSignature;
         if ($this->useLocalCaching && in_array($schema, self::$fullyCachedSchemas)) {
             return self::$localCache[$schema];
         }

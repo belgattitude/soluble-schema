@@ -2,6 +2,7 @@
 namespace Soluble\Schema\Source;
 
 use Soluble\Schema\Exception;
+use Soluble\DbWrapper\Adapter\AdapterInterface;
 
 abstract class AbstractSchemaSource implements SchemaSourceInterface
 {
@@ -11,7 +12,41 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
      */
     protected $schema;
 
+    
+    /**
+     * Schema signature
+     * @var string
+     */
+    protected $schemaSignature;
 
+    
+    /**
+     * @var AdapterInterface
+     */
+    protected $adapter;    
+    
+    /**
+     * Constructor
+     *
+     * @param AdapterInterface $adapter
+     * @param string|null $schema default schema, taken from adapter if not given
+     * @throws Exception\InvalidArgumentException for invalid connection
+     * @throws Exception\InvalidUsageException thrown if no schema can be found.
+     */
+    public function __construct(AdapterInterface $adapter, $schema = null)
+    {
+        $this->adapter = $adapter;
+        if ($schema === null) {
+            $schema = $this->adapter->getConnection()->getCurrentSchema();
+            if ($schema === false || $schema == '') {
+                $msg = "Database name (schema) parameter missing and no default schema set on connection";
+                throw new Exception\InvalidUsageException($msg);
+            }
+        }
+        $this->setDefaultSchema($schema);
+        $this->setSchemaSignature();
+    }
+    
 
     /**
      * {@inheritdoc}
@@ -112,5 +147,17 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
                 throw new Exception\InvalidArgumentException(__METHOD__ . " Table name must be a valid string or an empty string detected");
             }
         }
+    }
+    
+    /**
+     * Return current schema signature for caching
+     * 
+     * @return void
+     */
+    protected function setSchemaSignature()
+    {
+        $host   = $this->adapter->getConnection()->getHost();
+        $schema = $this->schema;
+        $this->schemaSignature = "$host:$schema";
     }
 }

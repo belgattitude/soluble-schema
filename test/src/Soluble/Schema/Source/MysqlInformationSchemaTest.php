@@ -33,8 +33,8 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->conn = \SolubleTestFactories::getDbConnection('pdo:mysql');
-        $this->adapter = AdapterFactory::createAdapterFromConnection($this->conn);
+        $this->conn = \SolubleTestFactories::getDbConnection('mysqli');
+        $this->adapter = AdapterFactory::createAdapterFromResource($this->conn);
         $this->metadata = new MysqlInformationSchema($this->conn);
     }
 
