@@ -3,7 +3,6 @@
 namespace Soluble\Schema\Source\Mysql;
 
 use Soluble\DbWrapper\Adapter\AdapterInterface;
-use Soluble\Schema\Exception;
 
 abstract class AbstractMysqlDriver implements MysqlDriverInterface
 {

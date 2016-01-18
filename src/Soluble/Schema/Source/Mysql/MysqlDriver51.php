@@ -37,30 +37,30 @@ class MysqlDriver51 extends AbstractMysqlDriver
     {
         $results = $this->executeQuery($table);
 
-        $references = array();
-        $config = new Config(array('tables' => array()), true);
+        $references = [];
+        $config = new Config(['tables' => []], true);
         $tables = $config->offsetGet('tables');
 
         foreach ($results as $r) {
             // Setting table information
             $table_name = $r['table_name'];
             if (!$tables->offsetExists($table_name)) {
-                $table_def = array(
+                $table_def = [
                     'name'          => $table_name,
-                    'columns'       => array(),
-                    'primary_keys'  => array(),
-                    'unique_keys'   => array(),
-                    'foreign_keys'  => array(),
-                    'references'    => array(),
-                    'indexes'       => array(),
-                );
+                    'columns'       => [],
+                    'primary_keys'  => [],
+                    'unique_keys'   => [],
+                    'foreign_keys'  => [],
+                    'references'    => [],
+                    'indexes'       => [],
+                ];
                 if ($include_options) {
-                    $table_def['options'] = array(
+                    $table_def['options'] = [
                        'comment'   => $r['table_comment'],
                        'collation' => $r['table_collation'],
                        'type'      => $r['table_type'],
                        'engine'    => $r['engine']
-                    );
+                    ];
                 }
                 $tables->offsetSet($table_name, $table_def);
             }
@@ -70,34 +70,34 @@ class MysqlDriver51 extends AbstractMysqlDriver
 
             $data_type = strtolower($r['data_type']);
 
-            $col_def = array(
+            $col_def = [
                 'type'          => $data_type,
                 'primary'       => ($r['constraint_type'] == 'PRIMARY KEY'),
                 'nullable'      => ($r['is_nullable'] == 'YES'),
                 'default'       => $r['column_default']
-            );
+            ];
             if (($r['constraint_type'] == 'PRIMARY KEY')) {
                 $col_def['primary'] = true;
                 $col_def['autoincrement'] = ($r['extra'] == 'auto_increment');
             }
 
             $has_charset = false;
-            if (in_array($data_type, array('int', 'tinyint', 'mediumint', 'bigint', 'int', 'smallint', 'year'))) {
+            if (in_array($data_type, ['int', 'tinyint', 'mediumint', 'bigint', 'int', 'smallint', 'year'])) {
                 $col_def['unsigned']  = (bool) preg_match('/unsigned/', strtolower($r['column_type']));
                 $col_def['precision'] = is_numeric($r['numeric_precision']) ? (int) $r['numeric_precision'] : null;
-            } elseif (in_array($data_type, array('real', 'double precision', 'decimal', 'numeric', 'float', 'dec', 'fixed'))) {
+            } elseif (in_array($data_type, ['real', 'double precision', 'decimal', 'numeric', 'float', 'dec', 'fixed'])) {
                 $col_def['precision'] = is_numeric($r['numeric_precision']) ? (int) $r['numeric_precision'] : null;
                 $col_def['scale']     = is_numeric($r['numeric_scale']) ? (int) $r['numeric_scale'] : null;
-            } elseif (in_array($data_type, array('timestamp', 'date', 'time', 'datetime'))) {
+            } elseif (in_array($data_type, ['timestamp', 'date', 'time', 'datetime'])) {
                 // nothing yet
-            } elseif (in_array($data_type, array('char', 'varchar', 'binary', 'varbinary', 'text', 'tinytext', 'mediumtext', 'longtext'))) {
+            } elseif (in_array($data_type, ['char', 'varchar', 'binary', 'varbinary', 'text', 'tinytext', 'mediumtext', 'longtext'])) {
                 $col_def['octet_length'] = is_numeric($r['character_octet_length']) ? (int) $r['character_octet_length'] : null;
                 $col_def['length'] = is_numeric($r['character_maximum_length']) ? (int) $r['character_maximum_length'] : null;
                 $has_charset = true;
-            } elseif (in_array($data_type, array('blob', 'tinyblob', 'mediumblob', 'longblob'))) {
+            } elseif (in_array($data_type, ['blob', 'tinyblob', 'mediumblob', 'longblob'])) {
                 $col_def['octet_length'] = (int) $r['character_octet_length'];
                 $col_def['length'] = (int) $r['character_maximum_length'];
-            } elseif (in_array($data_type, array('enum', 'set'))) {
+            } elseif (in_array($data_type, ['enum', 'set'])) {
                 $col_def['octet_length'] = (int) $r['character_octet_length'];
                 $col_def['length'] = (int) $r['character_maximum_length'];
                 $def = $r['column_type'];
@@ -109,13 +109,13 @@ class MysqlDriver51 extends AbstractMysqlDriver
             }
 
             if ($include_options) {
-                $col_def['options'] = array(
+                $col_def['options'] = [
                         'comment'           => $r['column_comment'],
                         'definition'        => $r['column_type'],
                         'column_key'        => $r['column_key'],
                         'ordinal_position'  => $r['ordinal_position'],
                         'constraint_type'   => $r['constraint_type'], // 'PRIMARY KEY', 'FOREIGN_KEY', 'UNIQUE'
-                    );
+                    ];
                 if ($has_charset) {
                     $col_def['options']['charset']     = $r['character_set_name'];
                     $col_def['options']['collation']   = $r['collation_name'];
@@ -136,7 +136,7 @@ class MysqlDriver51 extends AbstractMysqlDriver
                     break;
                 case 'UNIQUE':
                     if (!$unique_keys->offsetExists($constraint_name)) {
-                        $unique_keys[$constraint_name] = array();
+                        $unique_keys[$constraint_name] = [];
                     }
                     $unique_keys[$constraint_name] = array_merge($unique_keys[$constraint_name]->toArray(), (array) $column_name);
                     break;
@@ -147,25 +147,25 @@ class MysqlDriver51 extends AbstractMysqlDriver
                     }
                      *
                      */
-                    $fk = array(
+                    $fk = [
                        'referenced_table'  => $referenced_table_name,
                        'referenced_column' => $referenced_column_name,
                        'constraint_name' => $constraint_name
-                    );
+                    ];
                     $foreign_keys[$column_name] = $fk;
                     //$table->references[$referenced_table_name] = array($column_name => $r['referenced_column_name']);
 
                     if (!array_key_exists($referenced_table_name, $references)) {
-                        $references[$referenced_table_name] = array();
+                        $references[$referenced_table_name] = [];
                     }
 
                     $k = "$table_name:$referenced_column_name->$column_name";
-                    $references[$referenced_table_name][$k] = array(
+                    $references[$referenced_table_name][$k] = [
                         'column' => $column_name,
                         'referencing_table' => $table_name,
                         'referencing_column' => $referenced_column_name,
                         'constraint_name' => $constraint_name
-                    );
+                    ];
                     break;
             }
         }
@@ -180,7 +180,6 @@ class MysqlDriver51 extends AbstractMysqlDriver
         $array = new ArrayObject($config->toArray());
         unset($config);
         return $array;
-
     }
 
     /**
@@ -191,7 +190,6 @@ class MysqlDriver51 extends AbstractMysqlDriver
      */
     protected function getQuery($table = null)
     {
-
         $qSchema = $this->adapter->quoteValue($this->schema);
 
         if ($table !== null) {

@@ -28,7 +28,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
      *
      * @var array
      */
-    protected static $localCache = array();
+    protected static $localCache = [];
 
 
     /**
@@ -41,7 +41,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
      *
      * @var array
      */
-    protected static $fullyCachedSchemas = array();
+    protected static $fullyCachedSchemas = [];
 
 
     /**
@@ -86,7 +86,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
             try {
                 $pks = $this->getPrimaryKeys($table);
                 if (count($pks) > 0) {
-                    $uniques = array_merge($uniques, array('PRIMARY' => $pks));
+                    $uniques = array_merge($uniques, ['PRIMARY' => $pks]);
                 }
             } catch (Exception\NoPrimaryKeyException $e) {
                 // Ignore exception
@@ -112,7 +112,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     {
         $pks = $this->getPrimaryKeys($table);
         if (count($pks) > 1) {
-            $keys = join(',', $pks);
+            $keys = implode(',', $pks);
             throw new Exception\MultiplePrimaryKeyException(__METHOD__ . ". Multiple primary keys found on table '{$this->schemaSignature}'.'$table':  $keys");
         }
         return $pks[0];
@@ -201,7 +201,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
 
         if ($this->useLocalCaching) {
             if (!array_key_exists($schema, self::$localCache)) {
-                self::$localCache[$schema] = array();
+                self::$localCache[$schema] = [];
             }
             self::$localCache[$schema] = new ArrayObject(array_merge_recursive((array) self::$localCache[$schema], (array) $config));
         }
