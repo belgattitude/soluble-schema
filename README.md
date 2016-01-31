@@ -11,18 +11,32 @@
 
 ## Introduction
 
-Retrieve information form your database information schema.
+Query your database schema to know everything about your tables, columns, types, foreign keys...
 
 ## Features
 
-- Schema discovery made easy.
-- Provide an abstraction layer over information tables.
-- Support database extended informations (indexes, relations...)
+- Inspect, query and discover your database structure.
+- Rely on information schema tables for deep and accurate info.
+- Support database extended informations (native types, relations...)
+- Fast and reliable implementation (at least as fast as possible).
 
 ## Requirements
 
 - PHP engine 5.4+, 7.0+ or HHVM >= 3.2.
-- Currently supported database platforms (Mysql, MariaDb)
+
+
+## Supported databases
+
+Currently only MySQL and MariaDB are supported. 
+
+| Database     | Driver             | Source class                                         |
+|--------------|--------------------|------------------------------------------------------|
+| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema`       |
+| Mariadb 5.5+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema`       |
+
+You can create new schema sources (oracle, postgresql...) by implementing the `Soluble\Schema\Source\SchemaSourceInterface`. 
+
+Please see the [contribution guide](./CONTRIBUTING.md) and send a pull request.
 
 ## Documentation
 
@@ -34,7 +48,7 @@ Retrieve information form your database information schema.
 Instant installation via [composer](http://getcomposer.org/).
 
 ```console
-php composer require soluble/schema:0.*
+$ composer require soluble/schema:0.*
 ```
 Most modern frameworks will include Composer out of the box, but ensure the following file is included:
 
@@ -44,7 +58,7 @@ Most modern frameworks will include Composer out of the box, but ensure the foll
 require 'vendor/autoload.php';
 ```
 
-## Quick start
+## Examples
 
 ### Connection
 
@@ -69,30 +83,6 @@ $schema = new Schema\Source\MysqlInformationSchema($conn);
 // If you wnat to query a different schema, set it in the second parameter.
 $otherDbSchema = new Schema\Source\MysqlInformationSchema($conn, 'otherDbSchema');
 ```
-
-
-### API methods
-
-Once a `Schema\Source\SchemaSourceInterface` is intitalized, you have access to the following methods
-
-| Methods                         | Return        | Description                                 |
-|---------------------------------|---------------|---------------------------------------------|
-| `getSchemaConfig()`             | `ArrayObject` | Retrieve full extended schema config        |
-| `getTables()`                   | `array`       | Retrieve table names                        |
-| `getTablesInformation()`        | `array`       | Retrieve extended tables information        |
-| `hasTable()`                    | `boolean`     | Whether table exists                        |
-| `getColumns($table)`            | `array`       | Retrieve column names                       |
-| `getColumnsInformation($table)` | `array`       | Retrieve extended columns information       |
-| `getPrimaryKey($table)`         | `string`      | Retrieve primary key (unique)               |
-| `getPrimaryKeys($table)`        | `array`       | Retrieve primary keys (multiple)            |
-| `getUniqueKeys($table)`         | `array`       | Retrieve unique keys                        |
-| `getForeignKeys($table)`        | `array`       | Retrieve foreign keys information           |
-| `getReferences($table)`         | `array`       | Retrieve referencing tables (relations)     |
-| `getIndexes($table)`            | `array`       | Retrieve indexes info                       |
-
-
-## Examples
-
 
 ### Retrieve table informations in a database schema
 
@@ -293,18 +283,26 @@ $references = $schema->getReferences($table);
 ]
 ```
 
-## Supported platforms
+## API methods
 
-Currently only MySQL and MariaDB are supported. 
+Once a `Schema\Source\SchemaSourceInterface` is intitalized, you have access to the following methods
 
-| Database     | Driver             | Source class                                         |
-|--------------|--------------------|------------------------------------------------------|
-| MySQL 5.1+   | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema`       |
-| Mariadb 5.5+ | pdo_mysql, mysqli  | `Soluble\Schema\Source\MysqlInformationSchema`       |
+| Methods                         | Return        | Description                                 |
+|---------------------------------|---------------|---------------------------------------------|
+| `getSchemaConfig()`             | `ArrayObject` | Retrieve full extended schema config        |
+| `getTables()`                   | `array`       | Retrieve table names                        |
+| `getTablesInformation()`        | `array`       | Retrieve extended tables information        |
+| `hasTable()`                    | `boolean`     | Whether table exists                        |
+| `getColumns($table)`            | `array`       | Retrieve column names                       |
+| `getColumnsInformation($table)` | `array`       | Retrieve extended columns information       |
+| `getPrimaryKey($table)`         | `string`      | Retrieve primary key (unique)               |
+| `getPrimaryKeys($table)`        | `array`       | Retrieve primary keys (multiple)            |
+| `getUniqueKeys($table)`         | `array`       | Retrieve unique keys                        |
+| `getForeignKeys($table)`        | `array`       | Retrieve foreign keys information           |
+| `getReferences($table)`         | `array`       | Retrieve referencing tables (relations)     |
+| `getIndexes($table)`            | `array`       | Retrieve indexes info                       |
 
-You can create new schema sources (oracle, postgresql...) by implementing the `Soluble\Schema\Source\SchemaSourceInterface`. 
 
-Please see the [contribution guide](./CONTRIBUTING.md) and send a pull request.
 
 ## Future enhancements
 

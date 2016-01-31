@@ -280,10 +280,8 @@ class MysqlDriver51 extends AbstractMysqlDriver
         try {
             $results = $this->adapter->query($query);
         } catch (\Exception $e) {
-            //@codeCoverageIgnoreStart
             $this->restoreInnoDbStats();
             throw new Exception\ErrorException(__METHOD__ . ": " . $e->getMessage());
-            //@codeCoverageIgnoreEnd
         }
         $this->restoreInnoDbStats();
         return $results;
