@@ -217,8 +217,6 @@ try {
 // Get multiple primary keys
 try {
     $pks = $schema->getPrimaryKeys($table);
-} catch (Schema\Exception\MultiplePrimaryKeyException $e) {
-    //...
 } catch (Schema\Exception\NoPrimaryKeyException $e) {
     // ...
 }
