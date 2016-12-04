@@ -23,22 +23,23 @@ interface SchemaSourceInterface
      * ]
      * </code>
      *
-     * @param string $table table name
-     * @param boolean $include_primary include primary keys in the list
+     * @param string $table           table name
+     * @param bool   $include_primary include primary keys in the list
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      * @throws Exception\TableNotFoundException
+     *
      * @return array associative ['index_name' => ['col1', 'col2'], 'index_name_2' => ['col3']]
      */
     public function getUniqueKeys($table, $include_primary = false);
 
-
     /**
-     * Return indexes information on a table
+     * Return indexes information on a table.
      *
      * @param string $table table name
+     *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
@@ -49,23 +50,23 @@ interface SchemaSourceInterface
     public function getIndexesInformation($table);
 
     /**
-     * Return table primary key
+     * Return table primary key.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
-     * @throws Exception\NoPrimaryKeyException when no pk or multiple pk found
+     * @throws Exception\NoPrimaryKeyException       when no pk or multiple pk found
      * @throws Exception\MultiplePrimaryKeyException when multiple pk found
      * @throws Exception\ExceptionInterface
      * @throws Exception\TableNotFoundException
      *
      * @param string $table
+     *
      * @return string primary key
      */
     public function getPrimaryKey($table);
 
-
     /**
-     * Return composite primary keys
+     * Return composite primary keys.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
@@ -74,13 +75,13 @@ interface SchemaSourceInterface
      * @throws Exception\TableNotFoundException
      *
      * @param string $table
+     *
      * @return array primary keys ['col1', 'col3']
      */
     public function getPrimaryKeys($table);
 
-
     /**
-     * Retrieve full columns informations from a table
+     * Retrieve full columns informations from a table.
      *
      * <code>
      * // The resulting array looks like
@@ -127,13 +128,13 @@ interface SchemaSourceInterface
      * @throws Exception\TableNotFoundException
      *
      * @param string $table table name
+     *
      * @return array associative array i.e. ['colname' => ['type' => 'char', 'primary' => false, ...]]
      */
     public function getColumnsInformation($table);
 
-
     /**
-     * Retrieve foreign keys information
+     * Retrieve foreign keys information.
      *
      * <code>
      * // The resulting array looks like
@@ -161,7 +162,7 @@ interface SchemaSourceInterface
     public function getForeignKeys($table);
 
     /**
-     * Retrieve references (relation) to the given table
+     * Retrieve references (relation) to the given table.
      *
      * References allows you to get informations about all tables
      * referencing this table
@@ -190,11 +191,10 @@ interface SchemaSourceInterface
      *
      * @return array relations associative array ['col_name_1' => ['referenced_table' => 'tab1', 'referenced_column' => 'col1', 'constraint_name' => 'FK...']]
      */
-
     public function getReferences($table);
 
     /**
-     * Get full schema configuration
+     * Get full schema configuration.
      *
      * @throws Exception\ErrorException
      * @throws Exception\SchemaNotFoundException
@@ -204,7 +204,7 @@ interface SchemaSourceInterface
     public function getSchemaConfig();
 
     /**
-     * Return full information of all tables present in schema
+     * Return full information of all tables present in schema.
      *
      * <code>
      * // The resulting array looks like
@@ -264,10 +264,8 @@ interface SchemaSourceInterface
      */
     public function getTablesInformation();
 
-
-
     /**
-     * Return column information
+     * Return column information.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
@@ -275,26 +273,26 @@ interface SchemaSourceInterface
      * @throws Exception\TableNotFoundException
      *
      * @param string $table
+     *
      * @return array
      */
-
     public function getColumns($table);
 
-
     /**
-     * Return information about a specific table
+     * Return information about a specific table.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      *
      * @param string $table table name
+     *
      * @return array
      */
     public function getTableInformation($table);
 
     /**
-     * Return a list of table names
+     * Return a list of table names.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
@@ -304,15 +302,15 @@ interface SchemaSourceInterface
      */
     public function getTables();
 
-
     /**
-     * Check whether a table exists in the specified or current scheme
+     * Check whether a table exists in the specified or current scheme.
      *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\ErrorException
      * @throws Exception\ExceptionInterface
      *
      * @param string $table Table name
+     *
      * @return bool
      */
     public function hasTable($table);

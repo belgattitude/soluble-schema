@@ -12,22 +12,22 @@ abstract class AbstractMysqlDriver implements MysqlDriverInterface
     protected $adapter;
 
     /**
-     * Schema name
+     * Schema name.
+     *
      * @var string
      */
     protected $schema;
 
     /**
-     * Used to restore innodb stats mysql global variable
+     * Used to restore innodb stats mysql global variable.
+     *
      * @var string
      */
     protected $mysql_innodbstats_value;
 
-
     /**
-     *
      * @param AdapterInterface $adapter
-     * @param string $schema database name
+     * @param string           $schema  database name
      */
     public function __construct(AdapterInterface $adapter, $schema)
     {
@@ -35,11 +35,8 @@ abstract class AbstractMysqlDriver implements MysqlDriverInterface
         $this->schema = $schema;
     }
 
-
     /**
-     * Disable innodbstats will increase speed of metadata lookups
-     *
-     * @return void
+     * Disable innodbstats will increase speed of metadata lookups.
      */
     protected function disableInnoDbStats()
     {
@@ -62,10 +59,8 @@ abstract class AbstractMysqlDriver implements MysqlDriverInterface
         }
     }
 
-
     /**
-     * Restore old innodbstats variable
-     * @return void
+     * Restore old innodbstats variable.
      */
     protected function restoreInnoDbStats()
     {

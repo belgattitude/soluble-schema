@@ -1,4 +1,5 @@
 <?php
+
 namespace Soluble\Schema\Source;
 
 use Soluble\Schema\Exception;
@@ -10,53 +11,47 @@ use ArrayObject;
 class MysqlInformationSchema extends Source\AbstractSchemaSource
 {
     /**
-     * Schema name
+     * Schema name.
      *
      * @var string
      */
     protected $schema;
 
-
-
     /**
      * Whether to include full schema options like comment, collations...
-     * @var boolean
+     *
+     * @var bool
      */
     protected $include_options = true;
 
     /**
-     *
      * @var array
      */
     protected static $localCache = [];
 
-
     /**
-     *
-     * @var boolean
+     * @var bool
      */
     protected $useLocalCaching = true;
 
     /**
-     *
      * @var array
      */
     protected static $fullyCachedSchemas = [];
 
-
     /**
-     *
      * @var Mysql\MysqlDriverInterface
      */
     protected $driver;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param \PDO|\mysqli|AdapterInterface $adapter
-     * @param string|null $schema default schema, taken from adapter if not given
+     * @param string|null                   $schema  default schema, taken from adapter if not given
+     *
      * @throws Exception\InvalidArgumentException for invalid connection
-     * @throws Exception\InvalidUsageException thrown if no schema can be found.
+     * @throws Exception\InvalidUsageException    thrown if no schema can be found
      */
     public function __construct($adapter, $schema = null)
     {
@@ -73,7 +68,6 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
 
         $this->driver = new Mysql\MysqlDriver51($this->adapter, $this->schema);
     }
-
 
     /**
      * {@inheritdoc}
@@ -92,9 +86,9 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
                 // Ignore exception
             }
         }
+
         return $uniques;
     }
-
 
     /**
      * {@inheritdoc}
@@ -102,6 +96,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getIndexesInformation($table)
     {
         $this->loadCacheInformation($table);
+
         return self::$localCache[$this->schemaSignature]['tables'][$table]['indexes'];
     }
 
@@ -115,9 +110,9 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
             $keys = implode(',', $pks);
             throw new Exception\MultiplePrimaryKeyException(__METHOD__ . ". Multiple primary keys found on table '{$this->schemaSignature}'.'$table':  $keys");
         }
+
         return $pks[0];
     }
-
 
     /**
      * {@inheritdoc}
@@ -129,9 +124,9 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
         if (count($pks) == 0) {
             throw new Exception\NoPrimaryKeyException(__METHOD__ . ". No primary keys found on table  '{$this->schemaSignature}'.'$table'.");
         }
+
         return $pks;
     }
-
 
     /**
      * {@inheritdoc}
@@ -139,9 +134,9 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getColumnsInformation($table)
     {
         $this->loadCacheInformation($table);
+
         return self::$localCache[$this->schemaSignature]['tables'][$table]['columns'];
     }
-
 
     /**
      * {@inheritdoc}
@@ -149,6 +144,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getForeignKeys($table)
     {
         $this->loadCacheInformation($table);
+
         return self::$localCache[$this->schemaSignature]['tables'][$table]['foreign_keys'];
     }
 
@@ -158,6 +154,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getReferences($table)
     {
         $this->loadCacheInformation($table);
+
         return self::$localCache[$this->schemaSignature]['tables'][$table]['references'];
     }
 
@@ -167,17 +164,19 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     public function getTablesInformation()
     {
         $this->loadCacheInformation(null);
+
         return self::$localCache[$this->schemaSignature]['tables'];
     }
 
     /**
-     * Get a table configuration
+     * Get a table configuration.
      *
      * @throws Exception\ErrorException
      * @throws Exception\TableNotFoundException
      *
-     * @param string $table table name
-     * @param boolean|null $include_options include extended information
+     * @param string    $table           table name
+     * @param bool|null $include_options include extended information
+     *
      * @return ArrayObject
      */
     protected function getTableConfig($table, $include_options = null)
@@ -209,14 +208,14 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
         return $config['tables'][$table];
     }
 
-
     /**
-     * Get schema configuration
+     * Get schema configuration.
      *
      * @throws Exception\ErrorException
      * @throws Exception\SchemaNotFoundException
      *
-     * @param boolean|null $include_options include extended information
+     * @param bool|null $include_options include extended information
+     *
      * @return ArrayObject
      */
     public function getSchemaConfig($include_options = null)
@@ -237,15 +236,15 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
             self::$localCache[$schema] = $config;
             self::$fullyCachedSchemas[] = $schema;
         }
+
         return $config;
     }
 
     /**
-     *
      * @param string $table
+     *
      * @throws Exception\InvalidArgumentException
      * @throws Exception\TableNotFoundException
-     *
      */
     protected function loadCacheInformation($table = null)
     {
@@ -265,7 +264,7 @@ class MysqlInformationSchema extends Source\AbstractSchemaSource
     }
 
     /**
-     * Clear local cache information for the current schema
+     * Clear local cache information for the current schema.
      *
      * @throws Exception\InvalidArgumentException
      */

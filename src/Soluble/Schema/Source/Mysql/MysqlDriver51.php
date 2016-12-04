@@ -9,14 +9,14 @@ use Soluble\Schema\Exception;
 
 class MysqlDriver51 extends AbstractMysqlDriver
 {
-
     /**
      * @var AdapterInterface
      */
     protected $adapter;
 
     /**
-     * Schema name
+     * Schema name.
+     *
      * @var string
      */
     protected $schema;
@@ -31,6 +31,7 @@ class MysqlDriver51 extends AbstractMysqlDriver
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception\ErrorException
      */
     public function getSchemaConfig($table = null, $include_options = true)
@@ -46,35 +47,35 @@ class MysqlDriver51 extends AbstractMysqlDriver
             $table_name = $r['table_name'];
             if (!$tables->offsetExists($table_name)) {
                 $table_def = [
-                    'name'          => $table_name,
-                    'columns'       => [],
-                    'primary_keys'  => [],
-                    'unique_keys'   => [],
-                    'foreign_keys'  => [],
-                    'references'    => [],
-                    'indexes'       => [],
+                    'name' => $table_name,
+                    'columns' => [],
+                    'primary_keys' => [],
+                    'unique_keys' => [],
+                    'foreign_keys' => [],
+                    'references' => [],
+                    'indexes' => [],
                 ];
                 if ($include_options) {
                     $table_def['options'] = [
-                       'comment'   => $r['table_comment'],
+                       'comment' => $r['table_comment'],
                        'collation' => $r['table_collation'],
-                       'type'      => $r['table_type'],
-                       'engine'    => $r['engine']
+                       'type' => $r['table_type'],
+                       'engine' => $r['engine']
                     ];
                 }
                 $tables->offsetSet($table_name, $table_def);
             }
-            $table   = $tables->offsetGet($table_name);
+            $table = $tables->offsetGet($table_name);
             $columns = $table->columns;
             $column_name = $r['column_name'];
 
             $data_type = strtolower($r['data_type']);
 
             $col_def = [
-                'type'          => $data_type,
-                'primary'       => ($r['constraint_type'] == 'PRIMARY KEY'),
-                'nullable'      => ($r['is_nullable'] == 'YES'),
-                'default'       => $r['column_default']
+                'type' => $data_type,
+                'primary' => ($r['constraint_type'] == 'PRIMARY KEY'),
+                'nullable' => ($r['is_nullable'] == 'YES'),
+                'default' => $r['column_default']
             ];
             if (($r['constraint_type'] == 'PRIMARY KEY')) {
                 $col_def['primary'] = true;
@@ -83,11 +84,11 @@ class MysqlDriver51 extends AbstractMysqlDriver
 
             $has_charset = false;
             if (in_array($data_type, ['int', 'tinyint', 'mediumint', 'bigint', 'int', 'smallint', 'year'])) {
-                $col_def['unsigned']  = (bool) preg_match('/unsigned/', strtolower($r['column_type']));
+                $col_def['unsigned'] = (bool) preg_match('/unsigned/', strtolower($r['column_type']));
                 $col_def['precision'] = is_numeric($r['numeric_precision']) ? (int) $r['numeric_precision'] : null;
             } elseif (in_array($data_type, ['real', 'double precision', 'decimal', 'numeric', 'float', 'dec', 'fixed'])) {
                 $col_def['precision'] = is_numeric($r['numeric_precision']) ? (int) $r['numeric_precision'] : null;
-                $col_def['scale']     = is_numeric($r['numeric_scale']) ? (int) $r['numeric_scale'] : null;
+                $col_def['scale'] = is_numeric($r['numeric_scale']) ? (int) $r['numeric_scale'] : null;
             } elseif (in_array($data_type, ['timestamp', 'date', 'time', 'datetime'])) {
                 // nothing yet
             } elseif (in_array($data_type, ['char', 'varchar', 'binary', 'varbinary', 'text', 'tinytext', 'mediumtext', 'longtext'])) {
@@ -110,22 +111,22 @@ class MysqlDriver51 extends AbstractMysqlDriver
 
             if ($include_options) {
                 $col_def['options'] = [
-                        'comment'           => $r['column_comment'],
-                        'definition'        => $r['column_type'],
-                        'column_key'        => $r['column_key'],
-                        'ordinal_position'  => $r['ordinal_position'],
-                        'constraint_type'   => $r['constraint_type'], // 'PRIMARY KEY', 'FOREIGN_KEY', 'UNIQUE'
+                        'comment' => $r['column_comment'],
+                        'definition' => $r['column_type'],
+                        'column_key' => $r['column_key'],
+                        'ordinal_position' => $r['ordinal_position'],
+                        'constraint_type' => $r['constraint_type'], // 'PRIMARY KEY', 'FOREIGN_KEY', 'UNIQUE'
                     ];
                 if ($has_charset) {
-                    $col_def['options']['charset']     = $r['character_set_name'];
-                    $col_def['options']['collation']   = $r['collation_name'];
+                    $col_def['options']['charset'] = $r['character_set_name'];
+                    $col_def['options']['collation'] = $r['collation_name'];
                 }
             }
 
             $columns[$column_name] = $col_def;
 
             $foreign_keys = $table->foreign_keys;
-            $unique_keys  = $table->unique_keys;
+            $unique_keys = $table->unique_keys;
 
             $constraint_name = $r['constraint_name'];
             $referenced_table_name = $r['referenced_table_name'];
@@ -148,7 +149,7 @@ class MysqlDriver51 extends AbstractMysqlDriver
                      *
                      */
                     $fk = [
-                       'referenced_table'  => $referenced_table_name,
+                       'referenced_table' => $referenced_table_name,
                        'referenced_column' => $referenced_column_name,
                        'constraint_name' => $constraint_name
                     ];
@@ -179,13 +180,15 @@ class MysqlDriver51 extends AbstractMysqlDriver
 
         $array = new ArrayObject($config->toArray());
         unset($config);
+
         return $array;
     }
 
     /**
-     * Return information schema query
+     * Return information schema query.
      *
      * @param string|null $table
+     *
      * @return string
      */
     protected function getQuery($table = null)
@@ -195,9 +198,9 @@ class MysqlDriver51 extends AbstractMysqlDriver
         if ($table !== null) {
             $qTable = $this->adapter->quoteValue($table);
             $table_clause = "and (t.TABLE_NAME = $qTable or (kcu.referenced_table_name = $qTable and kcu.constraint_name = 'FOREIGN KEY'))";
-            $table_join_condition = "(t.table_name = kcu.table_name or  kcu.referenced_table_name = t.table_name)";
+            $table_join_condition = '(t.table_name = kcu.table_name or  kcu.referenced_table_name = t.table_name)';
         } else {
-            $table_join_condition = "t.table_name = kcu.table_name";
+            $table_join_condition = 't.table_name = kcu.table_name';
             $table_clause = '';
         }
 
@@ -267,10 +270,12 @@ class MysqlDriver51 extends AbstractMysqlDriver
     }
 
     /**
-     * Execute information schema query
+     * Execute information schema query.
      *
      * @param string|null $table table name or null
+     *
      * @return ArrayObject
+     *
      * @throws Exception\ErrorException
      */
     protected function executeQuery($table = null)
@@ -281,9 +286,10 @@ class MysqlDriver51 extends AbstractMysqlDriver
             $results = $this->adapter->query($query);
         } catch (\Exception $e) {
             $this->restoreInnoDbStats();
-            throw new Exception\ErrorException(__METHOD__ . ": " . $e->getMessage());
+            throw new Exception\ErrorException(__METHOD__ . ': ' . $e->getMessage());
         }
         $this->restoreInnoDbStats();
+
         return $results;
     }
 }

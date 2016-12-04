@@ -12,13 +12,11 @@ use Soluble\DbWrapper\AdapterFactory;
 class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     *
      * @var \PDO
      */
     protected $conn;
 
     /**
-     *
      * @var AdapterInterface
      */
     protected $adapter;
@@ -39,39 +37,33 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->metadata = new MysqlInformationSchema($this->conn);
     }
 
-
     public function testGetSchemaConfigThrowsSchemaNotFoundException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\SchemaNotFoundException');
-        $metadata = new MysqlInformationSchema($this->conn, $schema = "fdgdfgdfgppooaze");
+        $metadata = new MysqlInformationSchema($this->conn, $schema = 'fdgdfgdfgppooaze');
 
         $metadata->getSchemaConfig();
-
     }
-
 
     public function testConstructThrowsInvalidArgumentException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
 
-        $metadata = new MysqlInformationSchema($this->conn, array('schema_not_valid'));
+        $metadata = new MysqlInformationSchema($this->conn, ['schema_not_valid']);
     }
 
     public function testConstructThrowsInvalidArgumentException2()
     {
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
-        $metadata = new MysqlInformationSchema($this->conn, $schema = "   ");
+        $metadata = new MysqlInformationSchema($this->conn, $schema = '   ');
     }
-
-
-
 
     public function testGetSchemaConfig()
     {
         $schema = $this->metadata->getSchemaConfig();
         $this->assertInstanceOf('ArrayObject', $schema);
         $this->assertInternalType('array', $schema['tables']);
-        $this->assertTrue(array_key_exists('product', $schema['tables']));
+        $this->assertArrayHasKey('product', $schema['tables']);
     }
 
     public function testGetTableConfigThrowsTableNotFoundException()
@@ -80,17 +72,16 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         $this->setExpectedException('Soluble\Schema\Exception\TableNotFoundException');
-        $method->invokeArgs($this->metadata, array('table_unexistent_999'));
-
+        $method->invokeArgs($this->metadata, ['table_unexistent_999']);
     }
 
     public function testGetTableConfig()
     {
-        $table = "product_brand";
+        $table = 'product_brand';
 
         $method = new \ReflectionMethod('\Soluble\Schema\Source\MysqlInformationSchema', 'getTableConfig');
         $method->setAccessible(true);
-        $config = $method->invokeArgs($this->metadata, array($table));
+        $config = $method->invokeArgs($this->metadata, [$table]);
 
         $this->assertInternalType('array', $config);
         $this->assertEquals('product_brand', $config['name']);
@@ -100,6 +91,7 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $config['columns']['created_by']['primary']);
         $this->assertEquals(true, $config['columns']['brand_id']['primary']);
     }
+
     public function testGetForeignKeys()
     {
         $relations = $this->metadata->getForeignKeys('product');
@@ -109,22 +101,20 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('referenced_table', $relations['unit_id']);
         $this->assertArrayHasKey('constraint_name', $relations['unit_id']);
         $foreign_tables = array_keys($relations);
-        $this->assertEquals(array('brand_id', 'group_id','category_id','type_id','unit_id'), $foreign_tables);
+        $this->assertEquals(['brand_id', 'group_id', 'category_id', 'type_id', 'unit_id'], $foreign_tables);
         $this->assertEquals(5, count($foreign_tables));
     }
-
 
     public function testGetReferences()
     {
         $references = $this->metadata->getReferences('product');
         $this->assertInternalType('array', $references);
 
-        $media_ref = $references["product_media:product_id->product_id"];
-        $this->assertEquals("product_id", $media_ref['column']);
-        $this->assertEquals("product_media", $media_ref['referencing_table']);
-        $this->assertEquals("product_id", $media_ref['referencing_column']);
+        $media_ref = $references['product_media:product_id->product_id'];
+        $this->assertEquals('product_id', $media_ref['column']);
+        $this->assertEquals('product_media', $media_ref['referencing_table']);
+        $this->assertEquals('product_id', $media_ref['referencing_column']);
     }
-
 
     public function testGetTablesInformation()
     {
@@ -146,8 +136,7 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('unique_id_1', $unique);
         $this->assertInternalType('array', $unique['unique_id_1']);
         $this->assertEquals(2, count($unique['unique_id_1']));
-        $this->assertEquals(array('unique_id_1', 'unique_id_2'), $unique['unique_id_1']);
-
+        $this->assertEquals(['unique_id_1', 'unique_id_2'], $unique['unique_id_1']);
 
         $unique = $this->metadata->getUniqueKeys('product');
         $this->assertInternalType('array', $unique);
@@ -155,7 +144,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('unique_legacy_mapping_idx', $unique);
         $this->assertArrayHasKey('unique_reference_idx', $unique);
         $this->assertArrayHasKey('unique_slug_idx', $unique);
-
 
         $unique = $this->metadata->getUniqueKeys('product', $include_pk = true);
         $this->assertInternalType('array', $unique);
@@ -175,15 +163,12 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($unique));
     }
 
-
     public function testGetPrimaryKey()
     {
         $primary = $this->metadata->getPrimaryKey('user');
         $this->assertInternalType('string', $primary);
         $this->assertEquals('user_id', $primary);
     }
-
-
 
     public function testGetPrimaryKeyThrowsTableNotFoundException()
     {
@@ -215,7 +200,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('int', $infos['user_id']['type']);
     }
 
-
     public function testGetTableInformation()
     {
         $info = $this->metadata->getTableInformation('user');
@@ -228,7 +212,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->metadata->hasTable('user'));
         $this->assertFalse($this->metadata->hasTable('user_not_exists_888'));
     }
-
 
     public function testInnoDbStat()
     {
@@ -250,20 +233,17 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-
     public function testGetPrimaryKeyThrowsInvalidArgumentException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
-        $primary = $this->metadata->getPrimaryKey(array('cool'));
+        $primary = $this->metadata->getPrimaryKey(['cool']);
     }
-
 
     public function testGetPrimaryKeysThrowsInvalidArgumentException()
     {
         $this->setExpectedException('Soluble\Schema\Exception\InvalidArgumentException');
-        $primary = $this->metadata->getPrimaryKeys(array('cool'));
+        $primary = $this->metadata->getPrimaryKeys(['cool']);
     }
-
 
     public function testGetPrimaryKeyThrowsNoPrimaryKeyException()
     {
@@ -277,7 +257,6 @@ class MysqlInformationSchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $keys);
         $this->assertEquals('user_id', $keys[0]);
     }
-
 
     public function testGetPrimaryKeysThrowsNoPrimaryKeyException()
     {

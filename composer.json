@@ -27,6 +27,10 @@
         "soluble/dbwrapper": "^1.1.0",
         "zendframework/zend-config": ">=2.1.0,<3.0.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8 || ^5.4",
+        "friendsofphp/php-cs-fixer": "^2.0.0"
+    },
     "archive": {
         "exclude": ["test", "doc", ".travis.yml", ".codeclimate.yml", ".coveralls.yml", ".scrutinizer.yml", ".php_cs", ".gitignore", "phpcs.xml"]
     }
