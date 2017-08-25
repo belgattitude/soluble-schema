@@ -6,6 +6,7 @@
 # all the files and directories listed in .gitattributes file will be excluded. 
 /doc                export-ignore
 /test               export-ignore
+/.travis            export-ignore
 /.apigen.yml        export-ignore
 /.coveralls.yml     export-ignore
 /.editorconfig.yml  export-ignore

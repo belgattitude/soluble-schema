@@ -1,9 +1,8 @@
 # Soluble\Schema
 
 [![PHP Version](http://img.shields.io/badge/php-5.4+-ff69b4.svg)](https://packagist.org/packages/soluble/schema)
-[![HHVM Status](http://hhvm.h4cc.de/badge/soluble/schema.png?style=flat)](http://hhvm.h4cc.de/package/soluble/schema)
-[![Build Status](https://travis-ci.org/belgattitude/soluble-schema.png?branch=master)](https://travis-ci.org/belgattitude/soluble-schema)
-[![Code Coverage](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/badges/coverage.png?s=aaa552f6313a3a50145f0e87b252c84677c22aa9)](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/)
+[![Build Status](https://travis-ci.org/belgattitude/soluble-schema.svg?branch=master)](https://travis-ci.org/belgattitude/soluble-schema)
+[![codecov](https://codecov.io/gh/belgattitude/soluble-schema/branch/master/graph/badge.svg)](https://codecov.io/gh/belgattitude/soluble-schema)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/badges/quality-score.png?s=6f3ab91f916bf642f248e82c29857f94cb50bb33)](https://scrutinizer-ci.com/g/belgattitude/soluble-schema/)
 [![Latest Stable Version](https://poser.pugx.org/soluble/schema/v/stable.svg)](https://packagist.org/packages/soluble/schema)
 [![Total Downloads](https://poser.pugx.org/soluble/schema/downloads.png)](https://packagist.org/packages/soluble/schema)

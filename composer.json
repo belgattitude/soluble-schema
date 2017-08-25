@@ -8,7 +8,7 @@
         "information schema",
         "schema"
     ],
-    "homepage": "http://soluble.io",
+    "homepage": "https://github.com/belgattitude/soluble-schema",
     "type": "library",
     "authors": [
         {
@@ -24,13 +24,24 @@
     },
     "require": {
         "php": "^5.4.4 || ^7.0",
-        "soluble/dbwrapper": "^1.1.0",
+        "soluble/dbwrapper": "^1.3.0",
         "zendframework/zend-config": ">=2.1.0,<3.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8 || ^5.4",
-        "friendsofphp/php-cs-fixer": "^2.0.0"
+        "friendsofphp/php-cs-fixer": "^2.2.0"
     },
+    "scripts": {
+        "check": [
+            "@cs-check"
+        ],
+        "fix": [
+            "@cs-fix"
+        ],
+        "cs-check": "vendor/bin/php-cs-fixer --diff --dry-run -v fix",
+        "cs-fix": "vendor/bin/php-cs-fixer -v fix"
+    },
+
     "archive": {
         "exclude": ["test", "doc", ".travis.yml", ".codeclimate.yml", ".coveralls.yml", ".scrutinizer.yml", ".php_cs", ".gitignore", "phpcs.xml"]
     }

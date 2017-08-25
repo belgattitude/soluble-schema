@@ -95,7 +95,7 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
      *
      * @param string $table
      *
-     * @return AbstractSource
+     * @return self
      */
     protected function validateTable($table)
     {
@@ -111,9 +111,10 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
      * Check whether a schema parameter is valid.
      *
      * @throws Exception\InvalidArgumentException
-     * @param  string                             $schema
      *
-     * @return AbstractSource
+     * @param string $schema
+     *
+     * @return self
      */
     protected function validateSchema($schema)
     {
@@ -131,7 +132,7 @@ abstract class AbstractSchemaSource implements SchemaSourceInterface
      *
      * @param string $schema
      *
-     * @return AbstractSource
+     * @return self
      */
     protected function setDefaultSchema($schema)
     {

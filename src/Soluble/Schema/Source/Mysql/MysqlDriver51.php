@@ -283,7 +283,7 @@ class MysqlDriver51 extends AbstractMysqlDriver
         $query = $this->getQuery($table);
         $this->disableInnoDbStats();
         try {
-            $results = $this->adapter->query($query);
+            $results = $this->adapter->query($query)->getArrayObject();
         } catch (\Exception $e) {
             $this->restoreInnoDbStats();
             throw new Exception\ErrorException(__METHOD__ . ': ' . $e->getMessage());
