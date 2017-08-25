@@ -5,4 +5,5 @@
 ### Improvements
 
 - Tested with MariaDb 10.2.7
-- PHP 7.2 beta3 support  
+- PHP 7.2 beta3 support
+- Removed HHVM badge (still working)  
